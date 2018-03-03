@@ -2,6 +2,7 @@
  * Created by johan on 2017-02-26.
  */
 
+//comment
 
 // dum = "U2FsdGVkX185EedbNtyOYENDmXwrXAjOSz0i06amX71UnESvQuJA073cQFGhVNPCmu18u1ZBASfBo6yf5lZBpA==";
 // var dum2 = CryptoJS.AES.decrypt(dum, 'nipfjallet5.se');
