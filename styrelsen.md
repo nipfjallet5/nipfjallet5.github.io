@@ -11,4 +11,5 @@ Andreas Areschoug\\
 Elin Gidmark\\
 Saiva Zalkalns\\
 Malin Remes\\
-Gunilla Brandtler	
+Gunilla Brandtler\\
+Linn Johansson
