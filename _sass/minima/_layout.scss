@@ -2,7 +2,8 @@
  * Site header
  */
 .site-header {
-  border-top: 5px solid $grey-color-dark;
+  //border-top: 5px solid $grey-color-dark;
+  //margin-bottom: 10px;
   border-bottom: 1px solid $grey-color-light;
   min-height: 200px;
 
@@ -27,11 +28,17 @@
   &:visited {
     color: $grey-color-dark;
   }
+
+  @include media-query($on-palm) {
+    font-size: 25px;
+  }
+
 }
 
 .site-nav {
   float: right;
   line-height: 56px;
+  font-weight: bold;
 
   .menu-icon {
     display: none;
