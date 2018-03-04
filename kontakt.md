@@ -14,7 +14,7 @@ Adress:
 Kebnekaisevägen 22\\
 16758 Bromma_**
 
-Fakturaadress:
+Faktura-adress:
 
 **_Brf Nipfjället 5\\
 Fack 55892384\\

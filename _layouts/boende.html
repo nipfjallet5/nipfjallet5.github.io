@@ -1,0 +1,18 @@
+---
+layout: default_dynamic
+---
+<article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title | escape }}</h1>
+  </header>
+
+  <div class="post-content">
+    {{ content }}
+
+    <a href={{ "/styrelsen" | relative_url}}>Styrelsen</a><br>
+    <a href="../node/clear/stadgar.pdf">Stadgar</a><br>
+
+  </div>
+
+</article>
