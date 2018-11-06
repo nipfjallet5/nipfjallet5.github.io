@@ -42,6 +42,47 @@ Date.prototype.getDayOffset = function(days) {
 // d.addDays(7);
 // console.log(d, d.getWeek(), d.getWeekYear(), d.getPreviousMonday());
 
+
+let dropbox = new Dropbox.Dropbox({
+    fetch: fetch,
+    accessToken: 'l1NK-ZXx8_AAAAAAAAAAjxQLHJDkg_JoGi-Ki7TguhOnDwp0dEvH9bVPHdUrlAVP'
+});
+
+let getSlots = function() {
+
+    let selectedApartment = $("#selectApartment option:selected").val();
+    console.log('selectedApartment', selectedApartment);
+
+    dropbox.filesListFolder({path: ''})
+        .then(data => {
+            data.entries
+                .filter(slot => slot.name.startsWith("slot_"))
+                .forEach(slot => {
+                    let slotApartment = slot.name.split('_')[1];
+                    let slotId = slot.name.split('_').slice(2).join('_');
+                    // let color = slotApartment === selectedApartment ? 'green' : 'red';
+                    let slotClass = slotApartment === selectedApartment ? 'own-slot' : 'others-slot';
+                    let slotContainer = $("#weekgrid #" + slotId);
+                    // console.log(slotContainer.length);
+                    if (slotContainer.data()) {
+                        slotContainer.data().bookedBy = slotApartment;
+                        slotContainer.html(slotApartment);
+                    }
+                    slotContainer.removeClass('own-slot');
+                    slotContainer.removeClass('others-slot');
+                    slotContainer.addClass(slotClass);
+                });
+
+            console.log(data.entries);
+        }, console.error);
+
+    dropbox.filesDownload({path: '/tider.json'})
+        .then(function() {
+            console.log(arguments[0].fileBlob);
+        }, console.error);
+};
+
+
 let currentDate = new Date();
 let currentWeek = currentDate.getWeek();
 
@@ -50,40 +91,74 @@ let setWeek = function(weekNo) {
     let monday = currentDate.getPreviousMonday();
     console.log(monday);
 
-    $("#weekgrid").html("");
-    $("#weekgrid").append($("<div class='grid-header-item'>" + "" + "</div>"));
-    for (let day = 0; day <= 6; day++) {
+    let weekGrid = $("#weekgrid");
 
-        // console.log(monday.getDayOffset(day).getMonth(), monday.getDayOffset(day).getDate());
+    weekGrid.html("");
+    weekGrid.append($("<div class='grid-header-item'>" + "" + "</div>"));
+    for (let day = 0; day <= 6; day++) {
         let dateString = days[day] + "<br>" + monday.getDayOffset(day).getDate() + "/"+ (monday.getDayOffset(day).getMonth() + 1);
         // let dateSpan = $('span');
-
-        $("#weekgrid").append($("<div class='grid-header-item'>" + dateString + "</div>"))
+        weekGrid.append($("<div class='grid-header-item'>" + dateString + "</div>"))
     }
 
     for (let hour = 7; hour<=22; hour++) {
-        $("#weekgrid").append($("<div class='grid-item'>" + hour + "</div>"));
+        weekGrid.append($("<div class='grid-item'>" + hour + "</div>"));
 
         for (let day = 0; day <= 6; day++) {
 
-            let slot = $("<div class='grid-item'>")
+            let slotContainer = $("<div class='grid-item'>")
+                .attr('id',
+                    monday.getDayOffset(day).getFullYear() + '_' +
+                    monday.getDayOffset(day).getMonth() + '_' +
+                    monday.getDayOffset(day).getDate() + '_' +
+                    hour
+                )
                 .data({
-                year: monday.getDayOffset(day).getFullYear(),
-                month: monday.getDayOffset(day).getMonth(),
-                day: monday.getDayOffset(day).getDate(),
-                hour: hour,
-            })
+                    year: monday.getDayOffset(day).getFullYear(),
+                    month: monday.getDayOffset(day).getMonth(),
+                    day: monday.getDayOffset(day).getDate(),
+                    hour: hour,
+                })
                 .click(function() {
-                    console.log($(this).data());
-                    $(this).css({
-                        'background-color': 'green'
-                    });
-                });
 
-            $("#weekgrid").append(slot)
+                    let selectedApartment = $("#selectApartment option:selected").val();
+                    let slotApartment = $(this).data().bookedBy;
+
+                    let slotName = "slot_" +
+                        selectedApartment + "_" +
+                        $(this).data().year + "_" +
+                        $(this).data().month + "_" +
+                        $(this).data().day + "_" +
+                        $(this).data().hour;
+                    console.log(slotName);
+
+                    if (!slotApartment) {
+                        console.log('booking');
+                        $(this).html(selectedApartment);
+                        $(this).addClass('own-slot');
+                        $(this).data().bookedBy = selectedApartment;
+                        dropbox.filesUpload({path: "/" + slotName, contents: "content"})
+                            .then(function() {
+                                console.log('slot created');
+                            })
+                    }
+                    else if (slotApartment === selectedApartment) {
+                        console.log('canceling');
+                        $(this).html('');
+                        $(this).removeClass('own-slot');
+                        delete $(this).data().bookedBy;
+                        dropbox.filesDelete({path: "/" + slotName})
+                            .then(function() {
+                                console.log('slot deleted');
+                            })
+                    }
+                    else if (slotApartment !== selectedApartment) {
+                        console.log('busy');
+                    }
+                })
+                .appendTo(weekGrid);
         }
     }
-
 };
 
 
@@ -91,6 +166,10 @@ $(document).ready(function() {
     $("#weekNumber").attr("value", "vecka " + currentWeek).button("refresh");
     setWeek(currentWeek);
     console.log($("#weekNumber"), currentWeek);
+    $("#selectApartment").change(event => {
+        console.log('changing');
+        getSlots();
+    })
 });
 
 let days = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
@@ -99,31 +178,22 @@ $("#nextWeek").click(event => {
     currentDate.addDays(7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    // console.log(currentDate);
+    getSlots();
+    // console.log($("#selectApartment option:selected").text());
 });
 $("#prevWeek").click(event => {
     currentDate.addDays(-7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
+    getSlots();
     // console.log(currentDate);
 });
 $("#weekNumber").click(event => {
     currentDate = new Date();
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
+    getSlots();
     // console.log(currentDate);
 });
 
-new Dropbox.Dropbox({
-    fetch: fetch,
-    accessToken: 'l1NK-ZXx8_AAAAAAAAAAjxQLHJDkg_JoGi-Ki7TguhOnDwp0dEvH9bVPHdUrlAVP'
-})
-    // .filesDelete({path: "/booking.txt"})
-    // .filesUpload({path: "/booking.txt", contents: "content"})
-    .filesListFolder({path: ''})
-    .then(function(entries) {
-        console.log(entries.entries[0].name);
-
-        // $("#weeks").html(entries.entries[0].name);
-
-    }, console.error);
+getSlots();

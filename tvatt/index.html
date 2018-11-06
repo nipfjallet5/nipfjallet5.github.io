@@ -14,8 +14,8 @@
     <style>
         .grid-container {
             display: grid;
-            grid-template-columns: auto auto auto auto auto auto auto auto;
-            background-color: #2196F3;
+            grid-template-columns: repeat(8, 1fr);
+            background-color: lightblue;
             /*padding: 10px;*/
         }
         .grid-item {
@@ -26,6 +26,8 @@
             /*font-size: 30px;*/
             text-align: center;
             font-weight: bold;
+            text-shadow: none;
+            /*color: white;*/
         }
         .grid-header-item {
             background-color: rgba(255, 255, 255, 0.8);
@@ -36,6 +38,20 @@
             text-align: center;
             font-weight: bold;
         }
+        .own-slot {
+            background-color: green;
+            line-height: 20px;
+            font-size: 11px;
+            font-weight: normal;
+            color: white;
+        }
+        .others-slot {
+            background-color: red;
+            line-height: 20px;
+            font-size: 11px;
+            font-weight: normal;
+            color: white;
+        }
     </style>
 
 </head>
@@ -43,40 +59,23 @@
 
 <div data-role="page">
 
-    <!--<div class="ui-grid-b">-->
-    <!--<div class="ui-block-a"><input type="button" value="Hmm"></div></div>-->
-    <!--<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px">Block B</div></div>-->
-    <!--<div class="ui-block-c"><input type="button" value="Hmm"></div>-->
-    <!--</div>&lt;!&ndash; /grid-b &ndash;&gt;-->
-    <fieldset class="ui-grid-b">
+    <select name="select-native-1" id="selectApartment">
+        <option value="101">lägenhet 101, 18 bv vänster</option>
+        <option value="102">lägenhet 102, 18 bv höger</option>
+        <option value="103">lägenhet 103</option>
+        <option value="104">lägenhet 104</option>
+        <option value="105">lägenhet 105</option>
+    </select>
+
+    <div class="ui-grid-b">
         <div class="ui-block-a"><input  id="prevWeek" type="button" value="förra"></div>
         <!--<div class="ui-block-b"><div style="font-size: 30px; text-align: center;">v40</div></div>-->
         <div class="ui-block-b"><input id="weekNumber" type="button" value="vecka ??"></div>
         <div class="ui-block-c"><input id="nextWeek" type="button" value="nästa"></div>
-    </fieldset>
-
-    <select name="select-native-1" id="select-native-1">
-        <option value="1">101</option>
-        <option value="2">103</option>
-        <option value="3">104</option>
-        <option value="4">105</option>
-    </select>
-
-<!--<div class="ui-grid-d">-->
-<!--<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px">Block A</div></div>-->
-<!--<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px">Block B</div></div>-->
-<!--<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px">Block C</div></div>-->
-<!--<div class="ui-block-d"><div class="ui-bar ui-bar-a" style="height:60px">Block D</div></div>-->
-<!--<div class="ui-block-e"><div class="ui-bar ui-bar-a" style="height:60px">Block E</div></div>-->
-<!--</div>&lt;!&ndash; /grid-c &ndash;&gt;-->
+    </div>
 
     <div class="grid-container" id="weekgrid">
     </div>
-
-
-    <!--<div id="weeks">-->
-        <!--weeks-->
-    <!--</div>-->
 
     <script src="dropbox.js"></script>
 
@@ -85,40 +84,3 @@
 </body>
 </html>
 
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--<meta charset="UTF-8">-->
-<!--<title>Title</title>-->
-
-<!--<script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>-->
-<!--<script src="https://unpkg.com/dropbox/dist/DropboxTeam-sdk.min.js"></script>-->
-
-<!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.css">-->
-<!--<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>-->
-<!--<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.js"></script>-->
-
-<!--</head>-->
-<!--<body>-->
-
-<!--<fieldset class="ui-grid-b">-->
-<!--    <div class="ui-block-a"><input type="button" value="Hmm"></div>-->
-<!--    <div class="ui-block-b"><input type="reset" value="No"></div>-->
-<!--    <div class="ui-block-c"><input type="submit" value="Yes"></div>-->
-<!--</fieldset>-->
-<!--&lt;!&ndash;    <select name="select-native-1" id="select-native-1">&ndash;&gt;-->
-<!--&lt;!&ndash;        <option value="1">The 1st Option</option>&ndash;&gt;-->
-<!--&lt;!&ndash;        <option value="2">The 2nd Option</option>&ndash;&gt;-->
-<!--&lt;!&ndash;        <option value="3">The 3rd Option</option>&ndash;&gt;-->
-<!--&lt;!&ndash;        <option value="4">The 4th Option</option>&ndash;&gt;-->
-<!--&lt;!&ndash;    </select>&ndash;&gt;-->
-<!--&lt;!&ndash;<div data-role="controlgroup" data-type="horizontal" data-mini="true">&ndash;&gt;-->
-<!--&lt;!&ndash;<input type="button" value="Button">&ndash;&gt;-->
-<!--&lt;!&ndash;<input type="button" value="Button">&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;    <a href="#" class="ui-shadow ui-btn ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b">Add</a>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;    <a href="#" class="ui-shadow ui-btn ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b">Delete</a>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;    <a href="#" class="ui-shadow ui-btn ui-corner-all ui-btn-icon-left ui-icon-grid ui-btn-b">More</a>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--<script src="dropbox.js"></script>-->
-<!--</body>-->
-<!--</html>-->
