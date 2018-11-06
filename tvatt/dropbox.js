@@ -1,7 +1,3 @@
-// This script is released to the public domain and may be used, modified and
-// distributed without restrictions. Attribution not necessary but appreciated.
-// Source: https://weeknumber.net/how-to/javascript
-
 // Returns the ISO week of the date.
 Date.prototype.getWeek = function() {
     let date = new Date(this.getTime());
@@ -36,6 +32,12 @@ Date.prototype.addDays = function(days) {
     // return date;
 };
 
+Date.prototype.getDayOffset = function(days) {
+    let date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+};
+
 // let d = new Date('December 01, 2018 03:24:00');
 // d.addDays(7);
 // console.log(d, d.getWeek(), d.getWeekYear(), d.getPreviousMonday());
@@ -43,28 +45,73 @@ Date.prototype.addDays = function(days) {
 let currentDate = new Date();
 let currentWeek = currentDate.getWeek();
 
+let setWeek = function(weekNo) {
+
+    let monday = currentDate.getPreviousMonday();
+    console.log(monday);
+
+    $("#weekgrid").html("");
+    $("#weekgrid").append($("<div class='grid-header-item'>" + "" + "</div>"));
+    for (let day = 0; day <= 6; day++) {
+
+        // console.log(monday.getDayOffset(day).getMonth(), monday.getDayOffset(day).getDate());
+        let dateString = days[day] + "<br>" + monday.getDayOffset(day).getDate() + "/"+ (monday.getDayOffset(day).getMonth() + 1);
+        // let dateSpan = $('span');
+
+        $("#weekgrid").append($("<div class='grid-header-item'>" + dateString + "</div>"))
+    }
+
+    for (let hour = 7; hour<=22; hour++) {
+        $("#weekgrid").append($("<div class='grid-item'>" + hour + "</div>"));
+
+        for (let day = 0; day <= 6; day++) {
+
+            let slot = $("<div class='grid-item'>")
+                .data({
+                year: monday.getDayOffset(day).getFullYear(),
+                month: monday.getDayOffset(day).getMonth(),
+                day: monday.getDayOffset(day).getDate(),
+                hour: hour,
+            })
+                .click(function() {
+                    console.log($(this).data());
+                    $(this).css({
+                        'background-color': 'green'
+                    });
+                });
+
+            $("#weekgrid").append(slot)
+        }
+    }
+
+};
+
+
 $(document).ready(function() {
     $("#weekNumber").attr("value", "vecka " + currentWeek).button("refresh");
+    setWeek(currentWeek);
     console.log($("#weekNumber"), currentWeek);
 });
 
-let days = ['', 'M', 'T', 'O', 'T', 'F', 'L', 'S'];
-
+let days = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
 
 $("#nextWeek").click(event => {
     currentDate.addDays(7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
-    console.log(currentDate);
+    setWeek(currentDate.getWeek());
+    // console.log(currentDate);
 });
 $("#prevWeek").click(event => {
     currentDate.addDays(-7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
-    console.log(currentDate);
+    setWeek(currentDate.getWeek());
+    // console.log(currentDate);
 });
 $("#weekNumber").click(event => {
     currentDate = new Date();
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
-    console.log(currentDate);
+    setWeek(currentDate.getWeek());
+    // console.log(currentDate);
 });
 
 new Dropbox.Dropbox({
@@ -76,16 +123,7 @@ new Dropbox.Dropbox({
     .filesListFolder({path: ''})
     .then(function(entries) {
         console.log(entries.entries[0].name);
-        $("#weeks").html(entries.entries[0].name);
 
-        for (let day = 0; day <= 7; day++) {
-            $("#weekgrid").append($("<div class='grid-item'>" + days[day] + "</div>"))
-        }
+        // $("#weeks").html(entries.entries[0].name);
 
-        for (let hour = 7; hour<=22; hour++) {
-            $("#weekgrid").append($("<div class='grid-item'>" + hour + "</div>"));
-            for (let day = 0; day <= 6; day++) {
-                $("#weekgrid").append($("<div class='grid-item'>" + "" + "</div>"))
-            }
-        }
     }, console.error);
