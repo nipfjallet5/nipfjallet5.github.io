@@ -48,32 +48,59 @@ let dropbox = new Dropbox.Dropbox({
     accessToken: 'l1NK-ZXx8_AAAAAAAAAAjxQLHJDkg_JoGi-Ki7TguhOnDwp0dEvH9bVPHdUrlAVP'
 });
 
-let getSlots = function() {
+
+let getBookings = function() {
 
     let selectedApartment = $("#selectApartment option:selected").val();
     console.log('selectedApartment', selectedApartment);
 
     dropbox.filesListFolder({path: ''})
         .then(data => {
-            data.entries
-                .filter(slot => slot.name.startsWith("slot_"))
-                .forEach(slot => {
-                    let slotApartment = slot.name.split('_')[1];
-                    let slotId = slot.name.split('_').slice(2).join('_');
-                    // let color = slotApartment === selectedApartment ? 'green' : 'red';
-                    let slotClass = slotApartment === selectedApartment ? 'own-slot' : 'others-slot';
-                    let slotContainer = $("#weekgrid #" + slotId);
-                    // console.log(slotContainer.length);
-                    if (slotContainer.data()) {
-                        slotContainer.data().bookedBy = slotApartment;
-                        slotContainer.html(slotApartment);
+            let bookings = data.entries
+                .filter(booking => booking.name.startsWith("slot_"))
+                .map(booking => {
+                    let bookingApartment = booking.name.split('_')[1];
+                    let bookingId = booking.name.split('_').slice(2,6).join('_');
+                    let bookingClass = bookingApartment === selectedApartment ? 'own-slot' : 'others-slot';
+                    let bookingSlot = $("#weekgrid #" + bookingId);
+                    if (bookingSlot.data()) {
+                        bookingSlot.data().bookedBy = bookingApartment;
+                        bookingSlot.html(bookingApartment);
                     }
-                    slotContainer.removeClass('own-slot');
-                    slotContainer.removeClass('others-slot');
-                    slotContainer.addClass(slotClass);
+                    bookingSlot.removeClass('own-slot');
+                    bookingSlot.removeClass('others-slot');
+                    bookingSlot.addClass(bookingClass);
+                    return booking;
                 });
 
-            console.log(data.entries);
+            let duplicateBookings = bookings
+                .map(booking => {
+                    console.log(booking.name, booking.server_modified);
+                    return booking.name.split('_').slice(2,6).join('_')
+                })
+                .reduce((acc, el, i, arr) => {
+                    if (arr.indexOf(el) !== arr.lastIndexOf(el)) {
+                        if (!acc.hasOwnProperty(el)) acc[el] = [];
+                        acc[el].push(bookings[i]);
+                    }
+                    return acc;
+                }, {});
+
+            Object.values(duplicateBookings).map(dbs => {
+               return dbs
+                   .sort((a, b) => (new Date(a.server_modified) - new Date(b.server_modified)))
+                   .reduce((res, db, i, array) => array.slice(1), [])
+                   .map(db => {
+                       console.log('deleting', db.path_lower);
+                       dropbox.filesDelete({path: db.path_lower}).then(() => {
+                          console.log('duplicates deleted');
+                       });
+                       return 0;
+                   })
+            });
+
+            console.log(duplicateBookings);
+
         }, console.error);
 
     dropbox.filesDownload({path: '/tider.json'})
@@ -106,50 +133,66 @@ let setWeek = function(weekNo) {
 
         for (let day = 0; day <= 6; day++) {
 
+            let year = monday.getDayOffset(day).getFullYear();
+            let month = monday.getDayOffset(day).getMonth();
+            let date = monday.getDayOffset(day).getDate();
+
             let slotContainer = $("<div class='grid-item'>")
-                .attr('id',
-                    monday.getDayOffset(day).getFullYear() + '_' +
-                    monday.getDayOffset(day).getMonth() + '_' +
-                    monday.getDayOffset(day).getDate() + '_' +
-                    hour
-                )
+                .attr('id', year + '_' + month + '_' + date + '_' + hour)
                 .data({
-                    year: monday.getDayOffset(day).getFullYear(),
-                    month: monday.getDayOffset(day).getMonth(),
-                    day: monday.getDayOffset(day).getDate(),
+                    year: year,
+                    month: month,
+                    day: date,
                     hour: hour,
+                    identifier: year + '' + month + '' + date + '' + hour
                 })
                 .click(function() {
 
                     let selectedApartment = $("#selectApartment option:selected").val();
                     let slotApartment = $(this).data().bookedBy;
 
-                    let slotName = "slot_" +
-                        selectedApartment + "_" +
+                    let slotNameTemplate = "slot_###_" +
                         $(this).data().year + "_" +
                         $(this).data().month + "_" +
                         $(this).data().day + "_" +
-                        $(this).data().hour;
+                        $(this).data().hour + "_" +
+                        $(this).data().identifier;
+                    let slotName = slotNameTemplate.replace('###', selectedApartment);
+                    // let bookingSearchQuery = slotNameTemplate.replace('###', '*');
+                    let bookingSearchQuery = $(this).data().identifier;
+
                     console.log(slotName);
 
                     if (!slotApartment) {
                         console.log('booking');
-                        $(this).html(selectedApartment);
-                        $(this).addClass('own-slot');
-                        $(this).data().bookedBy = selectedApartment;
-                        dropbox.filesUpload({path: "/" + slotName, contents: "content"})
-                            .then(function() {
-                                console.log('slot created');
-                            })
+                        $(this).addClass('checking-slot');
+                        console.log('looking for', bookingSearchQuery);
+                        dropbox.filesSearch({path: '', query: bookingSearchQuery}).then(data => {
+                            console.log('found', data.matches);
+                            if (data.matches.length === 0) {
+                                dropbox.filesUpload({path: "/" + slotName, contents: "content"}).then(() => {
+                                    $(this).html(selectedApartment);
+                                    $(this).removeClass('checking-slot');
+                                    $(this).addClass('own-slot');
+                                    $(this).data().bookedBy = selectedApartment;
+                                    console.log('booking created');
+                                })
+                            }
+                            else {
+                                console.log("slot is taken");
+                                $(this).removeClass('checking-slot');
+                                getBookings();
+                            }
+                        });
+
                     }
                     else if (slotApartment === selectedApartment) {
-                        console.log('canceling');
                         $(this).html('');
                         $(this).removeClass('own-slot');
                         delete $(this).data().bookedBy;
                         dropbox.filesDelete({path: "/" + slotName})
                             .then(function() {
-                                console.log('slot deleted');
+                                console.log('booking deleted');
                             })
                     }
                     else if (slotApartment !== selectedApartment) {
@@ -168,7 +211,7 @@ $(document).ready(function() {
     console.log($("#weekNumber"), currentWeek);
     $("#selectApartment").change(event => {
         console.log('changing');
-        getSlots();
+        getBookings();
     })
 });
 
@@ -178,22 +221,22 @@ $("#nextWeek").click(event => {
     currentDate.addDays(7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    getSlots();
+    getBookings();
     // console.log($("#selectApartment option:selected").text());
 });
 $("#prevWeek").click(event => {
     currentDate.addDays(-7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    getSlots();
+    getBookings();
     // console.log(currentDate);
 });
 $("#weekNumber").click(event => {
     currentDate = new Date();
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    getSlots();
+    getBookings();
     // console.log(currentDate);
 });
 
-getSlots();
+getBookings();
