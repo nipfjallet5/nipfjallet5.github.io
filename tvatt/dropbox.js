@@ -109,6 +109,7 @@ let getBookings = function() {
         }, console.error);
 };
 
+window.onfocus = getBookings;
 
 let currentDate = new Date();
 let currentWeek = currentDate.getWeek();
