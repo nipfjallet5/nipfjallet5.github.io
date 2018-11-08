@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "crypto-js": "latest"
+    "dropbox": "^4.0.12"
   },
   "devDependencies": {
-    "crypto-js": "latest"
+    "crypto-js": "^3.1.9-1"
   }
 }

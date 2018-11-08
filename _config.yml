@@ -38,6 +38,7 @@ gems:
 exclude:
   - Gemfile
   - Gemfile.lock
+  - node
 
 # deployment
 host: 0.0.0.0
