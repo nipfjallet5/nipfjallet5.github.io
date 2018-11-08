@@ -38,10 +38,7 @@ Date.prototype.getDayOffset = function(days) {
     return date;
 };
 
-// let d = new Date('December 01, 2018 03:24:00');
-// d.addDays(7);
-// console.log(d, d.getWeek(), d.getWeekYear(), d.getPreviousMonday());
-
+console.log(localStorage);
 
 let dropbox = new Dropbox.Dropbox({
     fetch: fetch,
@@ -109,7 +106,9 @@ let getBookings = function() {
         }, console.error);
 };
 
-window.onfocus = getBookings;
+window.onfocus = function() {
+    setWeek(currentWeek);
+};
 
 let currentDate = new Date();
 let currentWeek = currentDate.getWeek();
@@ -203,16 +202,21 @@ let setWeek = function(weekNo) {
                 .appendTo(weekGrid);
         }
     }
+    getBookings();
 };
 
 
 $(document).ready(function() {
     $("#weekNumber").attr("value", "vecka " + currentWeek).button("refresh");
     setWeek(currentWeek);
+    // getBookings();
     console.log($("#weekNumber"), currentWeek);
     $("#selectApartment").change(event => {
+        localStorage.setItem('apartment',  $("#selectApartment option:selected").val());
+
         console.log('changing');
-        getBookings();
+        setWeek(currentWeek);
+        // getBookings();
     })
 });
 
@@ -222,22 +226,21 @@ $("#nextWeek").click(event => {
     currentDate.addDays(7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    getBookings();
+    // getBookings();
     // console.log($("#selectApartment option:selected").text());
 });
 $("#prevWeek").click(event => {
     currentDate.addDays(-7);
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    getBookings();
+    // getBookings();
     // console.log(currentDate);
 });
 $("#weekNumber").click(event => {
     currentDate = new Date();
     $("#weekNumber").attr("value", "vecka " + currentDate.getWeek()).button("refresh");
     setWeek(currentDate.getWeek());
-    getBookings();
+    // getBookings();
     // console.log(currentDate);
 });
 
-getBookings();
