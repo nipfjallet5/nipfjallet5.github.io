@@ -1,3 +1,9 @@
+'use strict';
+
+let dropbox;
+let weekSelector;
+let weekSchedule;
+
 // let AESencrypt = function(str, key) {
 //     return CryptoJS.AES.encrypt(str, key);
 // };
@@ -65,6 +71,63 @@ function hideKeyboard(element) {
     }, 100);
 }
 
+let getBookings = function() {
+
+    let fetchTask = new $.Deferred();
+
+    dropbox.filesListFolder({path: ''})
+        .then(data => {
+
+            let bookings = data.entries
+                .filter(booking => booking.name.startsWith("slot_"))
+                .map(booking => {
+                    let bookingData = {
+                        apartment: booking.name.split('_')[1],
+                        year: booking.name.split('_')[2],
+                        month: booking.name.split('_')[3],
+                        day: booking.name.split('_')[4],
+                        hour: booking.name.split('_')[5],
+                        identifier: booking.name.split('_')[6]
+                    };
+
+                    return bookingData;
+                });
+
+            let duplicateBookings = data.entries
+                .filter(booking => booking.name.startsWith("slot_"))
+                .map(booking => {
+                    console.log(booking.name, booking.server_modified);
+                    return booking.name.split('_').slice(2,6).join('_')
+                })
+                .reduce((acc, el, i, arr) => {
+                    if (arr.indexOf(el) !== arr.lastIndexOf(el)) {
+                        if (!acc.hasOwnProperty(el)) acc[el] = [];
+                        acc[el].push(data.entries[i]);
+                    }
+                    return acc;
+                }, {});
+
+            Object.values(duplicateBookings).forEach(dbs => {
+                return dbs
+                    .sort((a, b) => (new Date(a.server_modified) - new Date(b.server_modified)))
+                    .reduce((res, db, i, array) => array.slice(1), [])
+                    .forEach(db => {
+                        console.log('deleting', db.path_lower);
+                        dropbox.filesDelete({path: db.path_lower}).then(() => {
+                            console.log('duplicates deleted');
+                            weekSchedule[0].reload();
+                        });
+                    })
+            });
+
+            fetchTask.resolve(bookings);
+
+        }, console.error);
+
+    return fetchTask;
+};
+
+
 class WeekSelector extends HTMLElement {
     constructor() {
         super();
@@ -95,7 +158,7 @@ class WeekSelector extends HTMLElement {
 
         let apartmentHeader = $('week-selector #header')
             .attr('value', localStorage.getItem('apartment') + ' ' + localStorage.getItem('name'))
-            .button()
+            .button({mini: true})
             .click(event => {
                 localStorage.clear();
                 location.reload();
@@ -116,7 +179,7 @@ class WeekSelector extends HTMLElement {
         //     clearTimeout(delay);
         // });
 
-        $('.weekSelectButton').button();
+        $('.weekSelectButton').button({mini: true});
 
         $('.weekSelectButton#previous').click(event => {
             this.shiftDays(-7);
@@ -156,31 +219,46 @@ class WeekSchedule extends HTMLElement {
                 #grid-container {
                     display: grid;
                     grid-template-columns: repeat(8, 1fr);
+                    cursor: pointer;
                 }
                 .date-header-element {
                     font-weight: bold;
                     text-align: center;
                 }
-                .day-element {
+                .hour-item {
+                    font-weight: bold;
+                    text-align: center;
+                    border: 1px solid rgba(0, 0, 0, 0.3);
                 }
                 .date-element {
-                    font-size: 10px;
+                    font-size: 12px;
+                }
+                .slot-item {
+                    /*padding: 1px;*/
+                    background-color: #e9e9e9;
+                    border: 1px solid rgba(0, 0, 0, 0.3);
+                    border-radius: 3px;
+                    /*height: 20px;*/
+                    text-align: center;
+                    font-weight: bold;
+                    text-shadow: none;
                 }
             </style>
             <div id="grid-container">
         `;
         // this.attachShadow({mode: 'open'}).appendChild(template.content.cloneNode(true));
         this.appendChild(template.content.cloneNode(true));
-        console.log('WeekSelector constructed');
 
     }
 
     connectedCallback() {
         this.weekGrid = $('#grid-container')
-
     }
 
     setWeek(weekInfo) {
+
+        this.weekInfo = weekInfo;
+
         console.log('loading week', weekInfo);
 
         let days = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
@@ -198,19 +276,160 @@ class WeekSchedule extends HTMLElement {
             this.weekGrid.append($('<div>').addClass('date-header-element').append(dayElement).append(dateElement));
         }
 
+        for (let hour = 7; hour<=22; hour++) {
+            this.weekGrid.append($('<div>').addClass('hour-item').html(hour));
 
+            for (let day = 0; day <= 6; day++) {
 
+                let year = weekInfo.mondayDate.getDayOffset(day).getFullYear();
+                let month = weekInfo.mondayDate.getDayOffset(day).getMonth() + 1;
+                let date = weekInfo.mondayDate.getDayOffset(day).getDate();
+
+                let slotContainer = $('<div>')
+                    .addClass('slot-item')
+                    .attr('id', year + '_' + month + '_' + date + '_' + hour)
+                    .data({
+                        apartment: localStorage.getItem('apartment'),
+                        year: year,
+                        month: month,
+                        day: date,
+                        hour: hour,
+                        identifier: year + '' + month + '' + date + '' + hour
+                    })
+                    .click(function() {
+                        if ($(this).children().length === 0) {
+                            $(this).append(new Booking($(this).data(), true));
+                        }
+                        else {
+                            let booking = $(this).children('hour-booking');
+                            console.log(booking[0].data.apartment);
+                            if (booking[0].data.apartment === localStorage.getItem('apartment')) {
+                                booking[0].delete();
+                            }
+                            else {
+                                //TODO ...
+                                // alert(booking[0].data.apartment)
+                            }
+                        }
+                    })
+                    .appendTo(this.weekGrid);
+            }
+        }
+
+        $.when(getBookings()).done(data => {
+            data.forEach(d => {
+                let slotElement = this.weekGrid.children('#' + d.year + '_' + d.month + '_' + d.day + '_' + d.hour);
+                if (slotElement.length > 0) {
+                    console.log(slotElement);
+                    slotElement.append(new Booking(d, false));
+                }
+            });
+
+        });
+
+    }
+
+    reload() {
+        this.setWeek(this.weekInfo);
     }
 }
 window.customElements.define('week-schedule', WeekSchedule);
 
+class Booking extends HTMLElement {
+
+    // constructor(apartment, year, month, day, hour) {
+    constructor(data, doFetch) {
+        super();
+
+        this.data = data;
+        this.doFetch = doFetch;
+        this.bookingName = "slot_" +
+            data.apartment + "_" +
+            data.year + "_" +
+            data.month + "_" +
+            data.day + "_" +
+            data.hour + "_" +
+            data.identifier;
+
+        let template = document.createElement('template');
+        template.innerHTML = `
+            <style>
+                #booking-container {
+                    line-height: 20px;
+                    font-size: 14px;
+                    width: 100%;
+                    height: 100%;
+                }
+                .my-booking {
+                    background-color: green;
+                    color: white;
+                }
+                .other-booking {
+                    background-color: red;
+                    color: white;
+                }
+            </style>
+            <div id="booking-container">
+        `;
+        // this.attachShadow({mode: 'open'}).appendChild(template.content.cloneNode(true));
+        this.appendChild(template.content.cloneNode(true));
+    }
+
+    connectedCallback() {
+
+        let bookingText = this.doFetch ? '...' : this.data.apartment;
+        let bookingClass = this.data.apartment === localStorage.getItem('apartment') ? 'my-booking' : 'other-booking';
+
+        this.container = $(this).children('#booking-container')
+            .html(bookingText)
+            .addClass(bookingClass);
+
+        if (!this.doFetch) return;
+
+        dropbox.filesSearch({path: '', query: this.data.identifier}).then(data => {
+            console.log('found', data.matches);
+            if (data.matches.length === 0) {
+                dropbox.filesUpload({path: "/" + this.bookingName, contents: "content"}).then(() => {
+                    this.container
+                        .html(this.data.apartment);
+                    console.log('booking created');
+                }, () => {console.log('an error occured');})
+            }
+            else {
+                console.log("slot is taken");
+                $(this).remove();
+                weekSchedule[0].reload();
+                alert('the time was booked by someone else after you loaded the page');
+            }
+        });
+    }
+
+
+    delete() {
+        this.container
+            .html('...');
+        dropbox.filesDelete({path: "/" + this.bookingName})
+            .then(() =>  {
+                console.log('booking deleted');
+                $(this).remove();
+            }, () => {console.log('an error occured');})
+    }
+}
+window.customElements.define('hour-booking', Booking);
+
+
 let loadApp = function(){
+
+    dropbox = new Dropbox.Dropbox({
+        fetch: fetch,
+        accessToken: localStorage.getItem('dbtoken')
+    });
 
     let content = $('#content');
     content.html('');
 
-    let weekSelector = $(new WeekSelector());
-    let weekSchedule = $(new WeekSchedule());
+    weekSelector = $(new WeekSelector());
+    weekSchedule = $(new WeekSchedule());
 
     weekSelector.on('setWeek', (event, weekInfo) => {
         // console.log('hej');
@@ -226,22 +445,33 @@ let loadApp = function(){
 
 let accessToken = "U2FsdGVkX189p19Ob4DSM/9t8eIFgKOYYEKDM4ekNsC4VsMFP3pxSm7jPgao6UTwe89bkrrd2zgL+d0sISLA6jW7nc+7HUpUHw8YRxMeqPAsLGHpenmbNddMIYwNlB5N";
 
+
+// let loadApartmentInfo = function(password) {
+//     let loadTask = new $.Deferred();
+//     $.get('/assets/enc/data.json.enc', data => {
+//         try {
+//             window.N5Apartmentinfo = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
+//         }
+//         catch (e) {
+//         }
+//     }, 'text');
+//     return loadTask;
+// };
+
 let loadApartments = function(password) {
     $.get('/assets/enc/data.json.enc', data => {
         try {
-            let info = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
+            window.N5Apartmentinfo = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
 
             hideKeyboard($(this));
 
-            Object.entries(info.apartments).map(([apartmentNumber, name]) => {
+            Object.entries(window.N5Apartmentinfo.apartments).map(([apartmentNumber, name]) => {
                 console.log(apartmentNumber, name);
 
                 $('<input type="button">')
                     .attr('value', apartmentNumber + '. ' + name)
                     .appendTo($('#content'))
-                    .button({
-                        mini: true
-                    }).button('refresh')
+                    .button({mini: true}).button('refresh')
                     .click(event => {
                         console.log('selecting', apartmentNumber + '. ' + name);
 
@@ -263,10 +493,11 @@ let loadApartments = function(password) {
     }, 'text');
 };
 
+
 $(document).ready(function(){
 
     if (localStorage.length === 0) {
-        // let password = CryptoJS.SHA256('password').toString();
+        // let password = CryptoJS.SHA256('7475').toString();
         // loadApartments(password);
     }
     else {
@@ -280,23 +511,7 @@ $('#password').on('keyup',function(event) {
         console.log('checking password', this);
 
         let password = CryptoJS.SHA256($(this).val()).toString();
+        localStorage.setItem('pwhash', password);
         loadApartments(password);
-
-        // let dropbox = new Dropbox.Dropbox({
-        //     fetch: fetch,
-        //     accessToken: CryptoJS.AES.decrypt(accessToken, password).toString(CryptoJS.enc.Utf8)
-        // });
-        //
-        // dropbox.filesDownload({path: '/data.enc'})
-        //     .then(function() {
-        //         console.log(arguments[0].fileBlob);
-        //         let reader = new FileReader();
-        //         reader.onload = function() {
-        //             console.log(reader.result);
-        //         };
-        //         reader.readAsText(arguments[0].fileBlob);
-        //     }, console.error);
-
-
     }
 });
