@@ -116,6 +116,7 @@ let currentWeek = currentDate.getWeek();
 let setWeek = function(weekNo) {
 
     let monday = currentDate.getPreviousMonday();
+
     console.log(monday);
 
     let weekGrid = $("#weekgrid");
