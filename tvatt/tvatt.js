@@ -134,16 +134,6 @@ class WeekSelector extends HTMLElement {
         let template = document.createElement('template');
         template.innerHTML = `
             <style>
-                /*week-selector #headerWrapper {*/
-                     /*width: 85%;*/
-                /*}*/
-                /*week-selector #infoWrapper {*/
-                     /*width: 10%;*/
-                /*}*/
-                /*week-selector #infoButton {*/
-                     /*!*-webkit-border-radius: 10px;-moz-border-radius: 10px;border-radius: 10px;*!*/
-                     /*height: 40px;*/
-                /*}*/
                 .info-grid {
                   display: grid;
                   grid-template-columns: 45px auto;
@@ -387,7 +377,6 @@ window.customElements.define('week-schedule', WeekSchedule);
 
 class Booking extends HTMLElement {
 
-    // constructor(apartment, year, month, day, hour) {
     constructor(data, doFetch) {
         super();
 
@@ -416,7 +405,7 @@ class Booking extends HTMLElement {
                     color: white;
                 }
                 .other-booking {
-                    background-color: red;
+                    background-color: #ad0000;
                     color: white;
                 }
             </style>
@@ -454,7 +443,6 @@ class Booking extends HTMLElement {
             }
         });
     }
-
 
     delete() {
         this.container
@@ -506,19 +494,6 @@ let loadApp = function(){
 
 let accessToken = "U2FsdGVkX189p19Ob4DSM/9t8eIFgKOYYEKDM4ekNsC4VsMFP3pxSm7jPgao6UTwe89bkrrd2zgL+d0sISLA6jW7nc+7HUpUHw8YRxMeqPAsLGHpenmbNddMIYwNlB5N";
 
-
-// let loadApartmentInfo = function(password) {
-//     let loadTask = new $.Deferred();
-//     $.get('/assets/enc/data.json.enc', data => {
-//         try {
-//             window.N5Apartmentinfo = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
-//         }
-//         catch (e) {
-//         }
-//     }, 'text');
-//     return loadTask;
-// };
-
 let loadApartments = function(password) {
     $.get('/assets/enc/data.json.enc', data => {
         try {
@@ -561,7 +536,6 @@ let loadApartments = function(password) {
         }
     }, 'text');
 };
-
 
 $(document).ready(function(){
 
