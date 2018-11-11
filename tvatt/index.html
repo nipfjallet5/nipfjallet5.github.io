@@ -3,68 +3,71 @@
 <head>
     <title>Tvättstugan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <!--<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">-->
+    <!--<meta http-equiv="Pragma" content="no-cache">-->
+    <!--<meta http-equiv="Expires" content="0">-->
 
-    <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
-    <script src="https://unpkg.com/dropbox/dist/DropboxTeam-sdk.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/4.0.12/Dropbox-sdk.min.js"></script>
 
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.css" />
+
 
     <link rel="SHORTCUT ICON" href="/assets/images/favicon.ico" />
     <link rel="icon" href="/assets/images/favicon.ico" type="image/ico" />
 
     <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            /*background-color: lightblue;*/
-            /*padding: 10px;*/
+        body {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
         }
-        .grid-item {
-            background-color: lightgray;
-            border: 1px solid rgba(0, 0, 0, 0.3);
-            height: 20px;
-            /*padding: 20px;*/
-            /*font-size: 30px;*/
+        .apartment-selector {text-align: left}
+        input[type=number] {
+            -webkit-text-security: disc;
             text-align: center;
-            font-weight: bold;
-            text-shadow: none;
-            /*color: white;*/
         }
-        .grid-header-item {
-            background-color: lightgray;
-            border: 1px solid rgba(0, 0, 0, 0.3);
-            /*height: 40px;*/
-            /*padding: 20px;*/
-            font-size: 10px;
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #content {
+            padding: 0;
+        }
+        .password {
+            width: 100px;
+        }
+        #password {
+            text-shadow: none;
+        }
+        .password-valid {
+            background-color: green !important;
+            color: white !important;
+        }
+        .password-invalid {
+            background-color: red !important;
+            color: white !important;
+        }
+        .label {
+            padding: 5px;
+            margin: 0 auto;
+            width: 100px;
             text-align: center;
-            font-weight: bold;
-            text-shadow: none;
         }
-        .own-slot {
-            background-color: green;
-            line-height: 20px;
-            font-size: 11px;
-            font-weight: normal;
-            color: white;
+        .center-wrapper{
+            padding: 5px;
+            text-align: center;
         }
-        .checking-slot {
-            background-color: #6d996a;
-            line-height: 20px;
-            font-size: 11px;
-            font-weight: normal;
-            color: white;
-        }
-        .others-slot {
-            background-color: red;
-            line-height: 20px;
-            font-size: 11px;
-            font-weight: normal;
-            color: white;
+        .center-wrapper * {
+            margin: 0 auto;
         }
     </style>
 
@@ -72,28 +75,30 @@
 <body>
 
 <div data-role="page">
+    <div data-role="panel" id="infoPanel" data-display="overlay">
+        <h3>Tvättstugebokning för Nipfjället 5</h3>
 
-    <select name="select-native-1" id="selectApartment">
-        <option value="101">lägenhet 101, 18 bv vänster</option>
-        <option value="102">lägenhet 102, 18 bv höger</option>
-        <option value="103">lägenhet 103</option>
-        <option value="104">lägenhet 104</option>
-        <option value="105">lägenhet 105</option>
-    </select>
-
-    <div class="ui-grid-b">
-        <div class="ui-block-a"><input  id="prevWeek" type="button" value="förra"></div>
-        <!--<div class="ui-block-b"><div style="font-size: 30px; text-align: center;">v40</div></div>-->
-        <div class="ui-block-b"><input id="weekNumber" type="button" value="vecka ??"></div>
-        <div class="ui-block-c"><input id="nextWeek" type="button" value="nästa"></div>
+        <!-- panel content goes here -->
     </div>
 
-    <div class="grid-container" id="weekgrid">
+    <div id="content" data-role="content">
+
+
+        <div class="center-wrapper">
+            <div>
+                <div class="label">Kod:</div>
+                <!--<input id="password" type="password" pattern="[0-9]*" inputmode="numeric">-->
+                <input data-wrapper-class="password" data-clear-btn="false" name="password-1" id="password" value="" autocomplete="off" maxlength="4" type="number">
+            </div>
+        </div>
+        <div id="apartmentList">
+        </div>
     </div>
+</div>
 
-    <script src="dropbox.js"></script>
+<div id="debug"></div>
 
-</div><!-- /page -->
+<script src="tvatt.js"></script>
 
 </body>
 </html>
