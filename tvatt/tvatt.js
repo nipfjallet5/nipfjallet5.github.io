@@ -128,7 +128,6 @@ let getBookings = function() {
     return fetchTask;
 };
 
-
 class WeekSelector extends HTMLElement {
     constructor() {
         super();
@@ -525,6 +524,8 @@ let loadApartments = function(password) {
         try {
             window.N5Apartmentinfo = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
 
+            $('#apartmentList').html('<p>Välj din lägenhet i listan.</p>');
+
             $('#password').addClass('password-valid');
 
             hideKeyboard($('#password'));
@@ -570,7 +571,7 @@ $(document).ready(function(){
         }
     }
     else {
-        $('#password').focus().click();
+        // $('#password').focus().click();
         // let password = CryptoJS.SHA256('password').toString();
         // loadApartments(password);
     }
