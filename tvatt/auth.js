@@ -3,6 +3,7 @@
 let dropbox;
 let weekSelector;
 let weekSchedule;
+let version = 1;
 
 // let AESencrypt = function(str, key) {
 //     return CryptoJS.AES.encrypt(str, key);
@@ -486,7 +487,6 @@ let loadApartments = function(password) {
                     .click(event => {
                         console.log('selecting', apartmentNumber + '. ' + name);
 
-                        localStorage.clear();
                         localStorage.setItem('apartment', apartmentNumber);
                         localStorage.setItem('name', name);
                         localStorage.setItem('dbtoken', CryptoJS.AES.decrypt(accessToken, password).toString(CryptoJS.enc.Utf8));
@@ -508,12 +508,14 @@ let loadApartments = function(password) {
 
 $(document).ready(function(){
 
-    if (localStorage.length === 0) {
-        // let password = CryptoJS.SHA256('7475').toString();
-        // loadApartments(password);
+    if (localStorage.getItem('version') !== null) {
+        if (Number.parseInt(localStorage.getItem('version')) >= version) {
+            loadApp();
+        }
     }
     else {
-        loadApp();
+        // let password = CryptoJS.SHA256('password').toString();
+        // loadApartments(password);
     }
 
 });
@@ -523,7 +525,7 @@ $('#password').on('keyup',function(event) {
         console.log('checking password', this);
 
         let password = CryptoJS.SHA256($(this).val()).toString();
-        localStorage.setItem('pwhash', password);
+        localStorage.setItem('version', version);
         loadApartments(password);
     }
 });
