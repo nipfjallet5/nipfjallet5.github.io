@@ -134,15 +134,30 @@ class WeekSelector extends HTMLElement {
         super();
         let template = document.createElement('template');
         template.innerHTML = `
-            <!--<style>-->
-                <!--#headerSelected {-->
-                     <!--background-color: #ddd;-->
-                <!--}-->
-            <!--</style>-->
-            <input class="headerButton" id="header" type="button">
+            <style>
+                /*week-selector #headerWrapper {*/
+                     /*width: 85%;*/
+                /*}*/
+                /*week-selector #infoWrapper {*/
+                     /*width: 10%;*/
+                /*}*/
+                /*week-selector #infoButton {*/
+                     /*!*-webkit-border-radius: 10px;-moz-border-radius: 10px;border-radius: 10px;*!*/
+                     /*height: 40px;*/
+                /*}*/
+                .info-grid {
+                  display: grid;
+                  grid-template-columns: 45px auto;
+                }
+            </style>
+            
+            <div class="info-grid">
+                <div id="infoWrapper"><input data-wrapper-class="infoButton" id="info" type="button"></div>
+                <div id="headerWrapper"><input data-wrapper-class="headerButton" id="header" type="button"></div>
+            </div>
             <div class="ui-grid-b">
                 <div class="ui-block-a"><input class="weekSelectButton" id="previous" type="button" value="förra"></div>
-                <div class="ui-block-b"><input class="weekSelectButton" id="current" type="button" value="denna"></div>
+                <div class="ui-block-b"><input class="weekSelectButton" id="current" type="button" value="denna vecka"></div>
                 <div class="ui-block-c"><input class="weekSelectButton" id="next" type="button" value="nästa"></div>
             </div>
         `;
@@ -156,6 +171,21 @@ class WeekSelector extends HTMLElement {
 
     connectedCallback() {
         console.log('WeekSelector connected');
+
+        $('week-selector #info')
+            .button({
+                mini: true,
+                icon: 'bars',
+                iconpos: 'notext'
+            })
+            .click(event => {
+                $('#infoPanel').panel('open');
+                // $('#infoPanel').panel({
+                //     // display: 'overlay',
+                //     animate: true,
+                // }).panel('open');
+            });
+
 
         let apartmentHeader = $('week-selector #header')
             .attr('value', localStorage.getItem('apartment') + ' ' + localStorage.getItem('name'))
@@ -184,15 +214,15 @@ class WeekSelector extends HTMLElement {
 
         $('.weekSelectButton#previous').click(event => {
             this.shiftDays(-7);
-            $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
+            // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
         });
         $('.weekSelectButton#current').click(event => {
             this.shiftDays(0);
-            $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
+            // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
         });
         $('.weekSelectButton#next').click(event => {
             this.shiftDays(7);
-            $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
+            // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
         });
     }
 
@@ -206,6 +236,7 @@ class WeekSelector extends HTMLElement {
         if (nDays !== 0) this.currentDate.addDays(nDays);
         else this.currentDate = new Date();
         this.currentWeek = this.currentDate.getWeek();
+        $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
     }
 
     enable(value) {
@@ -229,6 +260,7 @@ class WeekSchedule extends HTMLElement {
                 .date-header-element {
                     font-weight: bold;
                     text-align: center;
+                    height: 40px;
                 }
                 .hour-item {
                     font-weight: bold;
@@ -247,6 +279,13 @@ class WeekSchedule extends HTMLElement {
                     text-align: center;
                     font-weight: bold;
                     text-shadow: none;
+                }
+                #weekNumberElement {
+                    background-color: black;
+                    color: white;
+                    font-size: 16px;
+                    text-align: center;
+                    line-height: 40px;
                 }
             </style>
             <div id="grid-container">
@@ -271,7 +310,11 @@ class WeekSchedule extends HTMLElement {
         let days = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
 
         this.weekGrid.html("");
-        this.weekGrid.append($("<div>").attr('id', 'weekNumberElement').addClass('date-header-element').html('v.' + weekInfo.weekNo));
+        this.weekGrid
+            .append($("<div>")
+            .attr('id', 'weekNumberElement')
+            .addClass('date-header-element')
+            .html('v.' + weekInfo.weekNo))
 
         for (let day = 0; day <= 6; day++) {
             let dayElement = $('<div>')
@@ -408,7 +451,7 @@ class Booking extends HTMLElement {
                 console.log("slot is taken");
                 $(this).remove();
                 weekSchedule[0].reload();
-                alert('the time was booked by someone else after you loaded the page');
+                alert('tiden har bokats av någon annan efter att du gick in på sidan');
             }
         });
     }
@@ -438,7 +481,14 @@ let loadApp = function(){
     content.html('');
 
     weekSelector = $(new WeekSelector());
-    weekSchedule = $(new WeekSchedule());
+    weekSchedule = $(new WeekSchedule())
+        .on('swipeleft', event => {
+            weekSelector[0].shiftDays(7);
+        })
+        .on('swiperight', event => {
+            weekSelector[0].shiftDays(-7);
+        });
+
 
     weekSelector.on('setWeek', (event, weekInfo) => {
         console.log('hej');
@@ -475,6 +525,10 @@ let loadApartments = function(password) {
         try {
             window.N5Apartmentinfo = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
 
+            $('#password').addClass('password-valid');
+
+            hideKeyboard($('#password'));
+
             hideKeyboard($(this));
 
             Object.entries(window.N5Apartmentinfo.apartments).map(([apartmentNumber, name]) => {
@@ -482,7 +536,7 @@ let loadApartments = function(password) {
 
                 $('<input type="button">')
                     .attr('value', apartmentNumber + '. ' + name)
-                    .appendTo($('#content'))
+                    .appendTo($('#apartmentList'))
                     .button({mini: true}).button('refresh')
                     .click(event => {
                         console.log('selecting', apartmentNumber + '. ' + name);
@@ -490,6 +544,7 @@ let loadApartments = function(password) {
                         localStorage.setItem('apartment', apartmentNumber);
                         localStorage.setItem('name', name);
                         localStorage.setItem('dbtoken', CryptoJS.AES.decrypt(accessToken, password).toString(CryptoJS.enc.Utf8));
+                        localStorage.setItem('version', version);
 
                         console.log(localStorage);
 
@@ -501,6 +556,7 @@ let loadApartments = function(password) {
             });
         }
         catch (e) {
+            $('#password').addClass('password-invalid');
         }
     }, 'text');
 };
@@ -514,6 +570,7 @@ $(document).ready(function(){
         }
     }
     else {
+        $('#password').focus().click();
         // let password = CryptoJS.SHA256('password').toString();
         // loadApartments(password);
     }
@@ -521,11 +578,16 @@ $(document).ready(function(){
 });
 
 $('#password').on('keyup',function(event) {
+    $('#password').removeClass('password-valid');
+    $('#password').removeClass('password-invalid');
+    $('#apartmentList').html('');
     if ($(this).val().length === 4) {
-        console.log('checking password', this);
-
         let password = CryptoJS.SHA256($(this).val()).toString();
-        localStorage.setItem('version', version);
         loadApartments(password);
     }
+    else {
+        // $('#content').html('');
+    }
+
+
 });
