@@ -206,6 +206,10 @@ class WeekSelector extends HTMLElement {
         else this.currentDate = new Date();
         this.currentWeek = this.currentDate.getWeek();
     }
+
+    enable(value) {
+        $('.weekSelectButton').prop("disabled", !value);
+    }
 }
 window.customElements.define('week-selector', WeekSelector);
 
@@ -256,6 +260,8 @@ class WeekSchedule extends HTMLElement {
     }
 
     setWeek(weekInfo) {
+
+        let setWeekTask = new $.Deferred();
 
         this.weekInfo = weekInfo;
 
@@ -324,9 +330,10 @@ class WeekSchedule extends HTMLElement {
                     slotElement.append(new Booking(d, false));
                 }
             });
-
+            setWeekTask.resolve();
         });
 
+        return setWeekTask;
     }
 
     reload() {
@@ -359,6 +366,7 @@ class Booking extends HTMLElement {
                     font-size: 14px;
                     width: 100%;
                     height: 100%;
+                    border-radius: 10px;
                 }
                 .my-booking {
                     background-color: green;
@@ -432,8 +440,11 @@ let loadApp = function(){
     weekSchedule = $(new WeekSchedule());
 
     weekSelector.on('setWeek', (event, weekInfo) => {
-        // console.log('hej');
-        weekSchedule[0].setWeek(weekInfo);
+        console.log('hej');
+        weekSelector[0].enable(false);
+        $.when(weekSchedule[0].setWeek(weekInfo)).done(() => {
+            weekSelector[0].enable(true);
+        });
     });
 
     content.append(weekSelector);
@@ -475,6 +486,7 @@ let loadApartments = function(password) {
                     .click(event => {
                         console.log('selecting', apartmentNumber + '. ' + name);
 
+                        localStorage.clear();
                         localStorage.setItem('apartment', apartmentNumber);
                         localStorage.setItem('name', name);
                         localStorage.setItem('dbtoken', CryptoJS.AES.decrypt(accessToken, password).toString(CryptoJS.enc.Utf8));
