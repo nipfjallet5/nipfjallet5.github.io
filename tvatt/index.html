@@ -77,7 +77,7 @@
 </head>
 <body>
 
-<div data-role="page">
+<div id="appPage" data-role="page">
     <div data-role="panel" id="infoPanel" data-display="overlay">
         <h3>Tvättstugebokning för Nipfjället 5</h3>
 
@@ -91,8 +91,18 @@
         <!-- panel content goes here -->
     </div>
 
-    <div id="content" data-role="content">
+    <div data-role="popup" id="popupBasic">
+        <!--<p>This is a completely basic popup, no options set.</p>-->
+        <div class="center-wrapper">
+            <div>
+                <div class="label">Ange kod för att se namn.</div>
+                <!--<input id="password" type="password" pattern="[0-9]*" inputmode="numeric">-->
+                <input data-wrapper-class="password" data-clear-btn="false" name="password-1" id="popupPassword" value="" autocomplete="off" maxlength="4" type="number">
+            </div>
+        </div>
+    </div>
 
+    <div id="content" data-role="content">
 
         <div class="center-wrapper">
             <div>

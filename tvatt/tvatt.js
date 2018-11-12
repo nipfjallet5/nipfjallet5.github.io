@@ -258,6 +258,7 @@ class WeekSchedule extends HTMLElement {
                 }
                 .date-element {
                     font-size: 12px;
+                    word-spacing: -2px;
                 }
                 .slot-item {
                     /*padding: 1px;*/
@@ -297,6 +298,7 @@ class WeekSchedule extends HTMLElement {
         console.log('loading week', weekInfo);
 
         let days = ['M', 'T', 'O', 'T', 'F', 'L', 'S'];
+        let months = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
         this.weekGrid.html("");
         this.weekGrid
@@ -311,7 +313,8 @@ class WeekSchedule extends HTMLElement {
                 .html(days[day]);
             let dateElement = $('<div>')
                 .addClass('date-element')
-                .html(weekInfo.mondayDate.getDayOffset(day).getDate() + "/"+ (weekInfo.mondayDate.getDayOffset(day).getMonth() + 1));
+                // .html(weekInfo.mondayDate.getDayOffset(day).getDate() + "/"+ (weekInfo.mondayDate.getDayOffset(day).getMonth() + 1));
+                .html(weekInfo.mondayDate.getDayOffset(day).getDate() + " "+ months[(weekInfo.mondayDate.getDayOffset(day).getMonth())]);
             this.weekGrid.append($('<div>').addClass('date-header-element').append(dayElement).append(dateElement));
         }
 
@@ -339,17 +342,16 @@ class WeekSchedule extends HTMLElement {
                         if ($(this).children().length === 0) {
                             $(this).append(new Booking($(this).data(), true));
                         }
-                        else {
-                            let booking = $(this).children('hour-booking');
-                            console.log(booking[0].data.apartment);
-                            if (booking[0].data.apartment === localStorage.getItem('apartment')) {
-                                booking[0].delete();
-                            }
-                            else {
-                                //TODO ...
-                                // alert(booking[0].data.apartment)
-                            }
-                        }
+                        // else {
+                        //     let booking = $(this).children('hour-booking');
+                        //     if (booking[0].data.apartment === localStorage.getItem('apartment')) {
+                        //         booking[0].delete();
+                        //     }
+                        //     else {
+                        //         //TODO ...
+                        //         // alert(booking[0].data.apartment)
+                        //     }
+                        // }
                     })
                     .appendTo(this.weekGrid);
             }
@@ -424,6 +426,17 @@ class Booking extends HTMLElement {
             .html(bookingText)
             .addClass(bookingClass);
 
+        this.container.on('click', event => {
+            console.log('BOOKING CLICKED');
+            if (this.data.apartment === localStorage.getItem('apartment')) {
+                this.delete();
+            }
+            else {
+                //TODO ...
+                // $('#popupBasic').popup('open');
+            }
+        });
+
         if (!this.doFetch) return;
 
         dropbox.filesSearch({path: '', query: this.data.identifier}).then(data => {
@@ -453,6 +466,7 @@ class Booking extends HTMLElement {
                 $(this).remove();
             }, () => {console.log('an error occured');})
     }
+
 }
 window.customElements.define('hour-booking', Booking);
 
@@ -494,10 +508,25 @@ let loadApp = function(){
 
 let accessToken = "U2FsdGVkX189p19Ob4DSM/9t8eIFgKOYYEKDM4ekNsC4VsMFP3pxSm7jPgao6UTwe89bkrrd2zgL+d0sISLA6jW7nc+7HUpUHw8YRxMeqPAsLGHpenmbNddMIYwNlB5N";
 
-let loadApartments = function(password) {
+let fetchApartmentInfo = function(password){
+    let fetchTask = new $.Deferred();
     $.get('/assets/enc/data.json.enc', data => {
         try {
-            window.N5Apartmentinfo = JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8));
+            fetchTask.resolve(JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8)));
+        }
+        catch(e) {
+            alert('hej');
+            fetchTask.resolve(null);
+        }
+    }, 'text');
+    return fetchTask;
+};
+
+let loadApartments = function(password) {
+
+    $.when(fetchApartmentInfo(password)).done(apartmentInfo => {
+
+        if (apartmentInfo != null) {
 
             $('#apartmentList').html('<p>Välj din lägenhet i listan.</p>');
 
@@ -505,9 +534,9 @@ let loadApartments = function(password) {
 
             hideKeyboard($('#password'));
 
-            hideKeyboard($(this));
+            // hideKeyboard($(this));
 
-            Object.entries(window.N5Apartmentinfo.apartments).map(([apartmentNumber, name]) => {
+            Object.entries(apartmentInfo.apartments).map(([apartmentNumber, name]) => {
                 console.log(apartmentNumber, name);
 
                 $('<input type="button">')
@@ -531,14 +560,13 @@ let loadApartments = function(password) {
                     });
             });
         }
-        catch (e) {
+        else {
             $('#password').addClass('password-invalid');
         }
-    }, 'text');
+    });
 };
 
 $(document).ready(function(){
-
     if (localStorage.getItem('version') !== null) {
         if (Number.parseInt(localStorage.getItem('version')) >= version) {
             loadApp();
