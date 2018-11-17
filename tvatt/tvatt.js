@@ -4,6 +4,7 @@ let dropbox;
 let weekSelector;
 let weekSchedule;
 let version = 1;
+let myBookings = {};
 
 // let AESencrypt = function(str, key) {
 //     return CryptoJS.AES.encrypt(str, key);
@@ -60,6 +61,10 @@ Date.prototype.getDayOffset = function(days) {
     date.setDate(date.getDate() + days);
     return date;
 };
+
+function isValidBooking(data) {
+    return true;
+}
 
 function hideKeyboard(element) {
     element.attr('readonly', 'readonly'); // Force keyboard to hide on input field.
@@ -339,7 +344,8 @@ class WeekSchedule extends HTMLElement {
                         identifier: year + '' + month + '' + date + '' + hour
                     })
                     .click(function() {
-                        if ($(this).children().length === 0) {
+                        console.log(Object.keys(myBookings).length);
+                        if ($(this).children().length === 0 && isValidBooking($(this).data())) {
                             $(this).append(new Booking($(this).data(), true));
                         }
                         // else {
@@ -390,7 +396,8 @@ class Booking extends HTMLElement {
             data.month + "_" +
             data.day + "_" +
             data.hour + "_" +
-            data.identifier;
+            data.identifier + "_" +
+            'lgh' + data.apartment;
 
         let template = document.createElement('template');
         template.innerHTML = `
@@ -437,15 +444,28 @@ class Booking extends HTMLElement {
             }
         });
 
+        if (this.data.apartment === localStorage.getItem('apartment')) {
+            myBookings[this.data.identifier] = this;
+            console.log(myBookings);
+        }
+
         if (!this.doFetch) return;
 
-        dropbox.filesSearch({path: '', query: this.data.identifier}).then(data => {
-            console.log('found', data.matches);
-            if (data.matches.length === 0) {
+        let searchPromises = [
+            dropbox.filesSearch({path: '', query: this.data.identifier}),
+            // dropbox.filesSearch({path: '', query: 'lgh' + this.data.apartment})
+        ];
+
+        Promise.all(searchPromises).then(data => {
+            console.log('found', data[0].matches);
+            // console.log('found', data[1].matches);
+            if (data[0].matches.length === 0) {
                 dropbox.filesUpload({path: "/" + this.bookingName, contents: "content"}).then(() => {
                     this.container
                         .html(this.data.apartment);
+
                     console.log('booking created');
+
                 }, () => {console.log('an error occured');})
             }
             else {
@@ -464,6 +484,8 @@ class Booking extends HTMLElement {
             .then(() =>  {
                 console.log('booking deleted');
                 $(this).remove();
+                delete myBookings[this.data.identifier];
+                console.log(myBookings);
             }, () => {console.log('an error occured');})
     }
 
