@@ -537,7 +537,7 @@ let fetchApartmentInfo = function(password){
             fetchTask.resolve(JSON.parse(CryptoJS.AES.decrypt(data, password).toString(CryptoJS.enc.Utf8)));
         }
         catch(e) {
-            alert('hej');
+            // alert('hej');
             fetchTask.resolve(null);
         }
     }, 'text');
@@ -610,8 +610,8 @@ $('#password').on('keyup',function(event) {
         let password = CryptoJS.SHA256($(this).val()).toString();
         loadApartments(password);
     }
-    else {
-        // $('#content').html('');
+    else if (($(this).val().length > 4)) {
+        $('#password').addClass('password-invalid');
     }
 
 
