@@ -209,6 +209,7 @@ class WeekSelector extends HTMLElement {
         $('.weekSelectButton#previous').click(event => {
             this.shiftDays(-7);
             // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
+            $(this).trigger('shiftWeekLeft');
         });
         $('.weekSelectButton#current').click(event => {
             this.shiftDays(0);
@@ -216,6 +217,7 @@ class WeekSelector extends HTMLElement {
         });
         $('.weekSelectButton#next').click(event => {
             this.shiftDays(7);
+            $(this).trigger('shiftWeekRight');
             // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
         });
     }
@@ -247,6 +249,7 @@ class WeekSchedule extends HTMLElement {
         template.innerHTML = `
             <style>
                 #grid-container {
+                    position: relative;
                     display: grid;
                     grid-template-columns: repeat(8, 1fr);
                     cursor: pointer;
@@ -262,6 +265,7 @@ class WeekSchedule extends HTMLElement {
                     border: 1px solid rgba(0, 0, 0, 0.3);
                 }
                 .date-element {
+                    color: black;
                     font-size: 12px;
                     word-spacing: -2px;
                 }
@@ -281,6 +285,7 @@ class WeekSchedule extends HTMLElement {
                     font-size: 16px;
                     text-align: center;
                     line-height: 40px;
+                    text-shadow: none;
                 }
             </style>
             <div id="grid-container">
@@ -292,6 +297,25 @@ class WeekSchedule extends HTMLElement {
 
     connectedCallback() {
         this.weekGrid = $('#grid-container')
+    }
+
+    slide(direction) {
+        let elementWidth = this.weekGrid.width();
+        let offsets = direction === 'right' ? [-elementWidth, elementWidth] : [elementWidth, -elementWidth];
+        $('#weekNumberElement').css({color: 'black'});
+        $('.date-element').css({color: 'white'});
+
+        this.weekGrid.animate({
+            left: offsets[0] + 'px'
+        },200, () => {
+            this.weekGrid.css({left: offsets[1] + 'px'});
+            this.weekGrid.animate({
+                left: "0px"
+            },200, () => {
+                $('#weekNumberElement').css({color: 'white'});
+                $('.date-element').css({color: 'black'});
+            })
+        });
     }
 
     setWeek(weekInfo) {
@@ -507,17 +531,24 @@ let loadApp = function(){
     weekSchedule = $(new WeekSchedule())
         .on('swipeleft', event => {
             weekSelector[0].shiftDays(7);
+            weekSchedule[0].slide('right');
         })
         .on('swiperight', event => {
             weekSelector[0].shiftDays(-7);
+            weekSchedule[0].slide('left');
         });
 
+        weekSelector.on('shiftWeekLeft', () => {
+            weekSchedule[0].slide('left');
+        });
+        weekSelector.on('shiftWeekRight', () => {
+            weekSchedule[0].slide('right');
+        });
 
-    weekSelector.on('setWeek', (event, weekInfo) => {
-        console.log('hej');
-        weekSelector[0].enable(false);
-        $.when(weekSchedule[0].setWeek(weekInfo)).done(() => {
-            weekSelector[0].enable(true);
+        weekSelector.on('setWeek', (event, weekInfo) => {
+            weekSelector[0].enable(false);
+            $.when(weekSchedule[0].setWeek(weekInfo)).done(() => {
+                weekSelector[0].enable(true);
         });
     });
 
