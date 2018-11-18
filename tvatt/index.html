@@ -15,6 +15,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.css" />
 
+    <!--<script src="http://cdn.rawgit.com/jquery/jquery-ui/1.10.4/ui/jquery.ui.datepicker.js"></script>-->
+    <!--<script id="mobile-datepicker" src="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.js"></script>-->
+    <!--<link rel="stylesheet" href="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.css">-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile-datebox/1.1.1/jqm-datebox.comp.calbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile-datebox/1.1.1/jqm-datebox.core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile-datebox/1.1.1/jqm-datebox.mode.calbox.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile-datebox/1.1.1/jqm-datebox.min.css" />
 
     <link rel="SHORTCUT ICON" href="/assets/images/washing-machine-xxl.png" />
     <link rel="icon" href="/assets/images/washing-machine-xxl.png" type="image/png" />
@@ -72,6 +80,15 @@
         #apartmentList {
             text-align: center;
         }
+        .ui-datebox-gridminus {
+            margin-left: 10px;
+        }
+        .ui-datebox-container {
+            left: 10px !important;
+            top: 10px !important;
+            border: none !important;
+        }
+
     </style>
 
 </head>
@@ -102,6 +119,10 @@
             <!--<input data-wrapper-class="infoButton" id="info" type="button" value="avbryt">-->
         </div>
     </div>
+
+    <!--<div data-role="popup" id="popupDatePicker">-->
+        <!--<input type="text" data-role="datebox" data-options='{"mode":"calbox"}'>-->
+    <!--</div>-->
 
     <div id="content" data-role="content">
 

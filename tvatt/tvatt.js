@@ -62,6 +62,12 @@ Date.prototype.getDayOffset = function(days) {
     return date;
 };
 
+Date.prototype.isSameDay = function(date) {
+    return this.getFullYear() === date.getFullYear() &&
+        this.getMonth() === date.getMonth() &&
+        this.getDate() === date.getDate();
+};
+
 function isValidBooking(data) {
     return true;
 }
@@ -102,7 +108,7 @@ let getBookings = function() {
             let duplicateBookings = data.entries
                 .filter(booking => booking.name.startsWith("slot_"))
                 .map(booking => {
-                    console.log(booking.name, booking.server_modified);
+                    // console.log(booking.name, booking.server_modified);
                     return booking.name.split('_').slice(2,6).join('_')
                 })
                 .reduce((acc, el, i, arr) => {
@@ -211,10 +217,25 @@ class WeekSelector extends HTMLElement {
             // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
             $(this).trigger('shiftWeekLeft');
         });
-        $('.weekSelectButton#current').click(event => {
-            this.shiftDays(0);
-            // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
-        });
+
+        $('.weekSelectButton#current')
+            .click(event => {
+                this.shiftDays(0);
+                // $(this).trigger('setWeek', {weekNo: this.currentWeek, mondayDate: this.currentDate.getPreviousMonday()});
+            })
+            .on('taphold', event => {
+                // $('#popupDatePicker').popup('open');
+                $('<div>')
+                    .datebox({mode:'calbox'})
+                    .bind('datebox', (event, passed) => {
+                        if ( passed.method === 'set' ) {
+                            console.log(passed);
+                        }
+                    })
+                    .datebox('open');
+                $('.ui-title').html('Datum');
+            });
+
         $('.weekSelectButton#next').click(event => {
             this.shiftDays(7);
             $(this).trigger('shiftWeekRight');
@@ -257,7 +278,11 @@ class WeekSchedule extends HTMLElement {
                 .date-header-element {
                     font-weight: bold;
                     text-align: center;
+                    text-shadow: none;
                     height: 40px;
+                }
+                .date-today {
+                    background-color: #d1d1dc !important;
                 }
                 .hour-item {
                     font-weight: bold;
@@ -322,6 +347,8 @@ class WeekSchedule extends HTMLElement {
 
         let setWeekTask = new $.Deferred();
 
+        let currentDate = new Date();
+
         this.weekInfo = weekInfo;
 
         console.log('loading week', weekInfo);
@@ -334,9 +361,12 @@ class WeekSchedule extends HTMLElement {
             .append($("<div>")
             .attr('id', 'weekNumberElement')
             .addClass('date-header-element')
-            .html('v.' + weekInfo.weekNo))
+            .html('v.' + weekInfo.weekNo));
 
         for (let day = 0; day <= 6; day++) {
+
+            console.log(weekInfo.mondayDate.getDayOffset(day).isSameDay(currentDate));
+
             let dayElement = $('<div>')
                 .addClass('day-element')
                 .html(days[day]);
@@ -344,7 +374,11 @@ class WeekSchedule extends HTMLElement {
                 .addClass('date-element')
                 // .html(weekInfo.mondayDate.getDayOffset(day).getDate() + "/"+ (weekInfo.mondayDate.getDayOffset(day).getMonth() + 1));
                 .html(weekInfo.mondayDate.getDayOffset(day).getDate() + " "+ months[(weekInfo.mondayDate.getDayOffset(day).getMonth())]);
-            this.weekGrid.append($('<div>').addClass('date-header-element').append(dayElement).append(dateElement));
+
+            let dateHeaderElement = $('<div>').addClass('date-header-element').append(dayElement).append(dateElement);
+            // if (weekInfo.mondayDate.getDayOffset(day).isSameDay(currentDate)) dateHeaderElement.addClass('date-today');
+
+            this.weekGrid.append(dateHeaderElement);
         }
 
         for (let hour = 7; hour<=22; hour++) {
@@ -384,6 +418,9 @@ class WeekSchedule extends HTMLElement {
                         // }
                     })
                     .appendTo(this.weekGrid);
+
+                if (weekInfo.mondayDate.getDayOffset(day).isSameDay(currentDate)) slotContainer.addClass('date-today');
+
             }
         }
 
@@ -391,7 +428,7 @@ class WeekSchedule extends HTMLElement {
             data.forEach(d => {
                 let slotElement = this.weekGrid.children('#' + d.year + '_' + d.month + '_' + d.day + '_' + d.hour);
                 if (slotElement.length > 0) {
-                    console.log(slotElement);
+                    // console.log(slotElement);
                     slotElement.append(new Booking(d, false));
                 }
             });
