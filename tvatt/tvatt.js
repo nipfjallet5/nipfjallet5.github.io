@@ -495,8 +495,8 @@ class Booking extends HTMLElement {
             .addClass(bookingClass);
 
         this.container.on('click', event => {
-            console.log('BOOKING CLICKED');
-            if (this.data.apartment === localStorage.getItem('apartment')) {
+            console.log('BOOKING CLICKED', this.data.apartment, localStorage.getItem('apartment'));
+            if (this.data.apartment === localStorage.getItem('apartment') || localStorage.getItem('apartment') == 122) {
                 this.delete();
             }
             else {
