@@ -4,4 +4,4 @@ title: Tvättstugan
 permalink: /tvattstugan/
 ---
 
-test
+Tvättstugan kan bokas på <b><a href="http://nipfjallet5.se/tvatt">http://nipfjallet5.se/tvatt</a></b>.
