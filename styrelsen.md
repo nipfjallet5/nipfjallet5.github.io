@@ -6,8 +6,9 @@ permalink: /styrelsen/
 
 Styrelsen består för tillfället av 7 personer:
 
-Johan Lundquist\\
-Elin Dellström Gidmark\\
-Linn Johansson\\
+Johan Lundqvist\\
+Sofia Breedh\\
+Eric Hjelmberg\\
+Mona Forsgren\\
 Gunilla Brandtler\\
 Christian Johansson
