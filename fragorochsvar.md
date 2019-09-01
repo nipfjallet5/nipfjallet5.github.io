@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Frågor och Svar (uppdaterat 2019-09-01)
+title: Frågor & Svar (uppdaterat 2019-09-01)
 permalink: /fragorochsvar/
 ---
 
