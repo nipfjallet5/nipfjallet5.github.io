@@ -86,7 +86,7 @@ Max 2 ägare
 Bredband levereras via fiber av <b><a href="https://alltele.a3.se/">a3</a></b> (f.d. AllTele). 135kr dras obligatoriskt på månadsavgiften.\\
 (Kabel-tv och bredband finns även att tillgå från Comhem. Detta kommer dock sannolikt att upphöra i framtiden)
 
-**Äger föreningen egna parkeringsplatser/garageplatser? Hur många? Kostnad?**
+**Äger föreningen egna parkeringsplatser/garageplatser? Hur många? Kostnad?**\\
 Föreningen har 4 st parkeringsplatser som kan hyras för 500 kr/mån, alla platser är för närvarande upptagna dessvärre. Kötid brukar ligga på 1-2 år.
 
 **Har föreningen några gemensamma utrymmen?**\\
