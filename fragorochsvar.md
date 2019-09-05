@@ -16,18 +16,6 @@ Ja
 **Vad består föreningen av?**\\
 21 bostadsrättslägenheter, inga hyresrättslägenheter eller lokaler
 
-**Typ av uppvärmning?**\\
-Fjärrvärme
-
-**Typ av fönster?**\\
-2-glas
-
-**Ventilation?**\\
-Självdrag
-
-**Fläkt?**\\
-Endast kolfilterfläkt godkänns.
-
 **Total yta (Föreningens storlek boyta respektive lokalyta)?**\\
 boyta 3500 kvm, lokalyta 60 kvm
 
@@ -92,7 +80,7 @@ Föreningen har 4 st parkeringsplatser som kan hyras för 500 kr/mån, alla plat
 **Har föreningen några gemensamma utrymmen?**\\
 Ja. Tvättstuga och Cykel/Barnvagnsförråd
 
-**Skall fastigheten genomgå några omfattande renoveringar, och i så fall när?**\\
+**Ska fastigheten genomgå några omfattande renoveringar, och i så fall när?**\\
 Fönsterrenovering planeras under 2020. 
 
 **Trappstädning?**\\
@@ -100,3 +88,16 @@ Sköts av städfirma.
 
 **Städdagar?**\\
 2 ggr om året. En på våren och en på hösten.
+
+**Typ av uppvärmning?**\\
+Fjärrvärme
+
+**Typ av fönster?**\\
+2-glas
+
+**Typ av Ventilation?**\\
+Självdrag
+
+**Typ av Fläkt?**\\
+Endast kolfilterfläkt godkänns.
+
