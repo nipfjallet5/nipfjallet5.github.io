@@ -16,7 +16,7 @@
 title: BRF Nipfjället 5
 email: info@nipfjallet5.se
 description: > # this means to ignore newlines until "baseurl:"
-  Nipfjället 5 är en bostadsrättsförening som ligger på Kebnekaisevägeh 18-22 i Traneberg, Stockholm.
+  Nipfjället 5 är en bostadsrättsförening som ligger på Kebnekaisevägen 18-22 i Traneberg, Stockholm.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: nipfjallet5
