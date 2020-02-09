@@ -16,7 +16,7 @@ Kebnekaisevägen 22\\
 
 Faktura-adress:
 
-**_Brf Nipfjället 5\\
-Fack 55892384\\
-R855\\
-10637 Stockholm_**
+**_Cortea AB\\
+Sadelmakarvägen 11 A\\
+Box 535\\
+146 33 Tullinge_**

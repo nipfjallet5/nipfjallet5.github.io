@@ -3,6 +3,18 @@ layout: default_dynamic
 ---
 <article class="post">
 
+  <script>
+    function getPdf() {
+      console.log('GETTING PDF');
+
+      fetch("/assets/pdf/stadgar.pdf")
+              .then(response => {
+                console.log(response);
+              })
+
+    }
+  </script>
+
   <header class="post-header">
     <h1 class="post-title">{{ page.title | escape }}</h1>
   </header>
@@ -11,8 +23,9 @@ layout: default_dynamic
     {{ content }}
 
     <a href={{ "/styrelsen" | relative_url}}>Styrelsen</a><br>
-    <a href="https://github.com/nipfjallet5/nipfjallet5.github.io/raw/master/node/clear/stadgar.pdf">Stadgar</a><br>
-    <a href="https://github.com/nipfjallet5/nipfjallet5.github.io/raw/master/node/clear/%C3%85rsredovisning%202018%20Brf%20Nipfj%C3%A4llet%205.pdf">Senaste årsredovisningen (2018)</a><br>
+<!--    <a href="javascript:getPdf()">Test</a><br>-->
+    <a href="/assets/pdf/stadgar.pdf">Stadgar</a><br>
+    <a href="/assets/pdf/arsredovisning2018.pdf">Senaste årsredovisningen (2018)</a><br>
     <a href={{ "/tvattstugan" | relative_url}}>Tvättstugan</a><br>
 
     <!--<iframe style="height: 500px; width: 500px; border: none" src="/tvatt/"></iframe>-->
