@@ -10,5 +10,5 @@ Johan Lundqvist\\
 Sofia Breedh\\
 Eric Hjelmberg\\
 Mona Forsgren\\
-Gunilla Brandtler\\
+Matilda Widing\\
 Christian Johansson
