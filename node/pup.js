@@ -31,19 +31,18 @@ var fs = require('fs');
 
             username.type('1291');
             await page.waitFor(100);
-            password.type('');
+            password.type('***REMOVED***');
             await page.waitFor(100);
             await login.click();
 
             await page.waitFor(2000);
-            // await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140&pagesize0=100');
-            await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140');
+            await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140&pagesize0=20');
+            //await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140');
             await page.waitFor(2000);
 
             const fakturor = await page.evaluate(() => {
                 const fields = ['Lopnr','Namn','OCRFaktnr','Faktdat','Forfaller','Total','Saldo','Faktbild','Attestera'];
                 const rows = Array.from(document.querySelectorAll('table.pure-table > tbody > tr'));
-                console.log(rows);
                 const data = rows.map(r => {
                     const cells = r.childNodes;
                     const rowData = {};
@@ -58,17 +57,19 @@ var fs = require('fs');
 
             let fakturorna = JSON.parse(fs.readFileSync('fakturor.json'));
 
+            let nAdded = 0;
             fakturor.forEach((f, i) => {
                 if (i > 1 && i !== fakturor.length-1) {
                     key = fakturor[i].Namn.replace(/ /g,'') + '_' + fakturor[i].Faktdat;
                     if (!(key in fakturorna)) {
                         fakturorna[key] = f;
                         console.log('adding new', key);
+                        nAdded++;
                     }
                 }
             });
 
-            // console.log(fakturorna);
+            console.log('added', nAdded);
 
             fs.writeFileSync('fakturor.json', JSON.stringify(fakturorna));
             // await page.screenshot({path: 'example.png'});
