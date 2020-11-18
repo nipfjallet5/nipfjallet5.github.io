@@ -31,7 +31,7 @@ var fs = require('fs');
 
             username.type('1291');
             await page.waitFor(100);
-            password.type('Jo=0Ti=5');
+            password.type(process.argv[0]);
             await page.waitFor(100);
             await login.click();
 
@@ -85,7 +85,7 @@ var fs = require('fs');
 //     service: 'Gmail',
 //     auth: {
 //         user: 'jolundq@gmail.com',
-//         pass: ''
+//         pass: 'Jo=0Ti=5'
 //     }
 // });
 //
