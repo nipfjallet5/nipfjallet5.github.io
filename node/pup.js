@@ -85,7 +85,7 @@ var fs = require('fs');
 //     service: 'Gmail',
 //     auth: {
 //         user: 'jolundq@gmail.com',
-//         pass: '***REMOVED***'
+//         pass: ''
 //     }
 // });
 //
