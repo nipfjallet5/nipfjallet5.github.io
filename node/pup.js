@@ -31,7 +31,7 @@ var fs = require('fs');
 
             username.type('1291');
             await page.waitFor(100);
-            password.type(process.argv[0]);
+            password.type(process.argv[2]);
             await page.waitFor(100);
             await login.click();
 
@@ -39,6 +39,7 @@ var fs = require('fs');
             await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140&pagesize0=20');
             //await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140');
             await page.waitFor(2000);
+	    await page.screenshot({path: 'screenshot.png'});
 
             const fakturor = await page.evaluate(() => {
                 const fields = ['Lopnr','Namn','OCRFaktnr','Faktdat','Forfaller','Total','Saldo','Faktbild','Attestera'];
@@ -69,6 +70,7 @@ var fs = require('fs');
                 }
             });
 
+            console.log('found', fakturor);
             console.log('added', nAdded);
 
             fs.writeFileSync('fakturor.json', JSON.stringify(fakturorna));
