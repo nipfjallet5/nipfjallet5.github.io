@@ -1,6 +1,46 @@
 const puppeteer = require('puppeteer');
-var nodemailer = require('nodemailer');
-var fs = require('fs');
+const nodemailer = require('nodemailer');
+const { google } = require("googleapis");
+const gc = require("./gcred.json");
+const fs = require('fs');
+
+function sendMail(message, all) {
+    const OAuth2 = google.auth.OAuth2;
+    const oauth2Client = new OAuth2(gc.i, gc.s, 'https://developers.google.com/oauthplayground');
+    oauth2Client.setCredentials({refresh_token: gc.r});
+    const accessToken = oauth2Client.getAccessToken();
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: "OAuth2",
+            user: "nipfjallet5@gmail.com",
+            clientId: gc.i,
+            clientSecret: gc.s,
+            refreshToken: gc.r,
+            accessToken: accessToken,
+            tls: {
+                rejectUnauthorized: false
+            }
+        }
+    });
+
+    const mailOptions = {
+        from: 'nipfjalet5@gmail.com',
+        to: all ? 'jolundq@gmail.com,ericmarcushjelmberg@gmail.com,marie.ivarsson@cortea.se' : 'jolundq@gmail.com,youone@live.se',
+        subject: 'Nya fakturor att signera',
+        text: message
+    };
+
+    console.log(mailOptions);
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+}
 
 (async () => {
     const browser = await puppeteer.launch();
@@ -39,7 +79,7 @@ var fs = require('fs');
             await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140&pagesize0=20');
             //await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140');
             await page.waitFor(2000);
-	    await page.screenshot({path: 'screenshot.png'});
+      	    await page.screenshot({path: 'screenshot.png'});
 
             const fakturor = await page.evaluate(() => {
                 const fields = ['Lopnr','Namn','OCRFaktnr','Faktdat','Forfaller','Total','Saldo','Faktbild','Attestera'];
@@ -58,6 +98,8 @@ var fs = require('fs');
 
             let fakturorna = JSON.parse(fs.readFileSync('fakturor.json'));
 
+            let fakturaList = '';
+
             let nAdded = 0;
             fakturor.forEach((f, i) => {
                 if (i > 1 && i !== fakturor.length-1) {
@@ -65,6 +107,7 @@ var fs = require('fs');
                     if (!(key in fakturorna)) {
                         fakturorna[key] = f;
                         console.log('adding new', key);
+                        fakturaList+= `${f.Namn}, ${f.Total} kr, förfaller ${f.Forfaller}\n`;
                         nAdded++;
                     }
                 }
@@ -75,6 +118,8 @@ var fs = require('fs');
 
             fs.writeFileSync('fakturor.json', JSON.stringify(fakturorna));
             // await page.screenshot({path: 'example.png'});
+
+            sendMail('Hej!\n\nDetta mejl genreras automatiskt då nya fakturor har upptäckts på Cortea-portalen. Följande fakturor är nya:\n\n' + fakturaList + '\nMvh Johan', nAdded > 0);
         }
     }
     catch (e) {
@@ -82,26 +127,3 @@ var fs = require('fs');
     }
     await browser.close();
 })();
-
-// var transporter = nodemailer.createTransport({
-//     service: 'Gmail',
-//     auth: {
-//         user: 'jolundq@gmail.com',
-//         pass: ''
-//     }
-// });
-//
-// var mailOptions = {
-//     from: 'jolundq@gmail.com',
-//     to: 'jolundq@gmail.com',
-//     subject: 'Sending Email using Node.js',
-//     text: 'That was easy!'
-// };
-//
-// transporter.sendMail(mailOptions, function(error, info){
-//     if (error) {
-//         console.log(error);
-//     } else {
-//         console.log('Email sent: ' + info.response);
-//     }
-// });

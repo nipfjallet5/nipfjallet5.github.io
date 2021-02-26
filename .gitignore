@@ -4,3 +4,6 @@ _site
 .sass-cache
 Gemfile.lock
 *.iml
+/node/gcred.json
+/node/fakturakoll.cmd
+/node/fakturor.json
