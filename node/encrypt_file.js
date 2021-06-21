@@ -1,5 +1,3 @@
-'use strict';
-
 let CryptoJS = require('crypto-js');
 let fs = require('fs');
 
@@ -18,6 +16,16 @@ function decryptFileBase64(inFile, outFile, password) {
         let bitmap = new Buffer(dectrypted_b64, 'base64');
         fs.writeFileSync(outFile, bitmap);
     });
+}
+
+function encryptFile(inFile, outFile, password) {
+    fs.writeFileSync(outFile, CryptoJS.AES.encrypt(fs.readFileSync(inFile).toString(), password))
+}
+
+function decryptFile(inFile, outFile, password) {
+    const data = CryptoJS.AES.decrypt(fs.readFileSync(inFile).toString(), password).toString(CryptoJS.enc.Utf8);
+    fs.writeFileSync(outFile, data);
+    return data;
 }
 
 function base64_encode(file) {
@@ -39,37 +47,20 @@ let AESdecrypt = function(str, key) {
     return CryptoJS.AES.decrypt(str, key).toString(CryptoJS.enc.Utf8);
 };
 
-// // let password = 'password';
-let password = CryptoJS.SHA256("password").toString();
-// let crypto = AESencrypt('cleartext', password).toString();
-// console.log(crypto);
-// let cleartext = AESdecrypt(crypto, password);
-// console.log(cleartext);
+const fileName = process.argv.slice(2)[0];
+const key = process.argv.slice(2)[1];
+console.log(fileName, key);
 
-// encryptFileBase64(fileName, "stadgar.aes", password);
-// decryptFileBase64("../assets/enc/data.json.enc", "test.json", password);
+let password = CryptoJS.SHA256(key).toString();
 
-fs.readFile('clear/data.json', (err, data) => {
-    if (err) throw err;
+encryptFile(fileName, `../assets/enc/${fileName}.enc`, password);
 
-    let crypto = CryptoJS.AES.encrypt(data.toString(), password).toString();
-    return fs.writeFile('../assets/enc/data.json.enc', crypto, (err) => {
-        if (err) throw err;
-        console.log('Saved!');
-    });
 
-    // let cleartext = CryptoJS.AES.decrypt(crypto, password).toString(CryptoJS.enc.Utf8);
-    // console.log(cleartext);
-});
-
-// fs.readdir("clear/.", function(err, files) {
-//
-//     files.forEach(function(file) {
-//         let outputFile = "../assets/enc/" + file + ".enc";
-//         console.log(file, outputFile);
-//
-//         encryptFileBase64("clear/" + file, outputFile, password);
-//
-//     })
+// fs.readFile(fileName, (err, data) => {
+//     if (err) throw err;
+//     let crypto = CryptoJS.AES.encrypt(data.toString(), password).toString();
+//     return fs.writeFile(`../assets/enc/${fileName}.enc`, crypto, (err) => {
+//         if (err) throw err;
+//         console.log('Saved!');
+//     });
 // });
-
