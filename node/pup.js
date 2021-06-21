@@ -3,22 +3,17 @@ const puppeteer = require('puppeteer');
 const nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const fs = require('fs');
-const gauth = require('./gauth.json');
+// const gauth = require('./gauth.json');
 
 async function sendMail(message, nAdded) {
 
-    // console.log('GGGGGGGGGGGGGGG', CryptoJS.AES.decrypt(fs.readFileSync('../assets/enc/gauth.json.enc').toString(), CryptoJS.SHA256(gauthKey).toString()).toString(CryptoJS.enc.Utf8) );
-    // gauth = JSON.parse(CryptoJS.AES.decrypt(fs.readFileSync('../assets/enc/gauth.json.enc').toString(), CryptoJS.SHA256(gauthKey).toString()).toString(CryptoJS.enc.Utf8));
-    // console.log('GGGGGGGGGGGGGGG', gauth);
-
-    // let gauth;
-    // if (gauthKey) {
-    //     gauth = JSON.parse(CryptoJS.AES.decrypt(fs.readFileSync('../assets/enc/gauth.json.enc').toString(), CryptoJS.SHA256(gauthKey).toString()).toString(CryptoJS.enc.Utf8));
-    //     // console.log(gauth);
-    // }
-    // else {
-    //     throw(new Error('missing key'));
-    // }
+    let gauth;
+    if (gauthKey) {
+        gauth = JSON.parse(CryptoJS.AES.decrypt(fs.readFileSync('../assets/enc/gauth.json.enc').toString(), CryptoJS.SHA256(gauthKey).toString()).toString(CryptoJS.enc.Utf8));
+    }
+    else {
+        throw(new Error('missing key'));
+    }
 
     const OAuth2 = google.auth.OAuth2;
     const oauth2Client = new OAuth2(gauth.fakturor.client_id, gauth.fakturor.client_secret, 'https://developers.google.com/oauthplayground');
