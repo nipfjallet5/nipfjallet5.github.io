@@ -127,9 +127,7 @@ let gauthKey = process.argv[3];
             let nAdded = 0;
             fakturor.forEach((f, i) => {
                 try {
-                    if (f.Lopnr) {
-                        Number.parseInt(f.Lopnr);
-                        // console.log(f.Lopnr, f.Namn);
+                    if (!isNaN(Number.parseInt(f.Lopnr))) {
                         key = f.Lopnr + '_' + f.Namn.replace(/ /g,'') + '_' + f.Faktdat;
                         if (!(key in fakturorna)) {
                             fakturorna[key] = f;
@@ -149,7 +147,7 @@ let gauthKey = process.argv[3];
             fs.writeFileSync('fakturor.json', JSON.stringify(fakturorna));
             // await page.screenshot({path: 'example.png'});
 
-            sendMail('Hej!\n\nDetta mejl genreras automatiskt då nya fakturor har upptäckts på Cortea-portalen. Följande fakturor är nya:\n\n' + fakturaList + '\nMvh Johan', nAdded);
+            // sendMail('Hej!\n\nDetta mejl genreras automatiskt då nya fakturor har upptäckts på Cortea-portalen. Följande fakturor är nya:\n\n' + fakturaList + '\nMvh Johan', nAdded);
         }
     }
     catch (e) {
