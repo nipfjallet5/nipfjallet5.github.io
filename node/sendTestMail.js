@@ -2,7 +2,7 @@ let CryptoJS = require('crypto-js');
 const nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const fs = require('fs');
-// const gauth = require('./gauth.json');
+// let gauth = require('./gauth.json');
 
 let gauthKey = process.argv[2];
 

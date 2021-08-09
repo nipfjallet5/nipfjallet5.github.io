@@ -3,6 +3,34 @@ let fs = require('fs');
 const { google } = require("googleapis");
 const key = process.argv.slice(2)[0];
 fakturor = require("./fakturor.json");
+// let gauth = require("./gauth.json");
+
+function getColumn(name) {
+    return Object.entries(fakturor)
+        .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+        .filter((f) => f[1].Faktdat.startsWith(year))
+        .filter((f) => !excluded.includes(f[1].Lopnr))
+        .map(([n,f]) => [f[name]]);
+}
+
+function updateColumn(colName, resource) {
+    return sheets.spreadsheets.values.update({
+        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+        range: `${sheetName}!${colName}2:${colName}`,
+        valueInputOption: 'USER_ENTERED',
+        resource: resource,
+    }, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result.data.updatedCells, 'cells updated');
+        }
+    });
+}
+
+const year = '2021';
+// const sheetName = year;
+const sheetName = 'temp';
 
 let gauth;
 if (key) {
@@ -18,25 +46,164 @@ oauth2Client.setCredentials({refresh_token: gauth.sheets.refresh_token});
 
 const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
 
-return sheets.spreadsheets.values.get({
+const excluded = [
+    '41',  //återbetalning  av lån i Handlsbanken
+    '183', //Fog & Fönster (fönsterrenovering)
+    '191', //Fog & Fönster (fönsterrenovering)
+    '192'  //Fog & Fönster (fönsterrenovering)
+];
+
+const foretag = getColumn('Namn');
+const datum = getColumn('Faktdat');
+const belopp = getColumn('Total').map(value => [value[0].replace(' ','').replace(',00','')]);
+const lopnr = getColumn('Lopnr');
+const dayOfYear = datum.map(d => {
+        return [(Math.ceil((Date.parse(d[0]) - Date.parse(`${year}-01-01`))) / (1000 * 60 * 60 * 24)).toString()];
+    })
+;
+
+// Object.entries(fakturor)
+//         .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+//         .forEach(([n,f]) => {
+//             console.log([f.Lopnr, f.Namn, f.Faktdat, f.Total.replace(' ','').replace(',00','')].join(','));
+//         });
+
+
+(async () => {
+
+    await Promise.all([
+        updateColumn('A', {values: foretag}),
+        updateColumn('B', {values: datum}),
+        updateColumn('C', {values: dayOfYear}),
+        updateColumn('D', {values: belopp}),
+        updateColumn('F', {values: lopnr})
+    ])
+
+
+    const sortRequest = {
         spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
-        range: '2021',
-})
-    .then((data) => {
-            console.log(data.data.values);
+        resource: {
+            requests: [{
+                sortRange: {
+                    range: {
+                        "sheetId": 453295472,
+                        "startRowIndex": 1,
+                        // "endRowIndex": 10,
+                        // "startColumnIndex": 0,
+                        "endColumnIndex": 7
+                    },
+                    sortSpecs: [
+                        {
+                            "dimensionIndex": 1,
+                            "sortOrder": "ASCENDING"
+                        },
+                        {
+                            "dimensionIndex": 3,
+                            "sortOrder": "ASCENDING"
+                        }
+                    ]
+                }
+            }]
+        }
+    };
+    setTimeout(async () => {
+        await sheets.spreadsheets.batchUpdate(sortRequest, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('sorted');
+            }
+        });
+    }, 4000);
 
-            Object.entries(fakturor)
-                .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
-                .forEach(([n,f]) => {
-                        console.log([f.Lopnr, f.Namn, f.Faktdat, f.Total.replace(' ','').replace(',00','')].join(','));
-                });
+    const firstTotalParams = {
+        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+        range: `${sheetName}!E2`,
+        valueInputOption: 'USER_ENTERED',
+        resource: {values: [['=D2']]},
+    };
+    setTimeout(async () => {
+        await sheets.spreadsheets.values.update(firstTotalParams, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result.data.updatedCells, 'cells updated');
+            }
+        });
+    }, 6000);
 
-    });
+    const totalssFillRequest = {
+        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+        resource: {
+            requests: [{
+                repeatCell: {
+                    range: {
+                        sheetId: 453295472,
+                        startRowIndex: 2,
+                        endRowIndex: 100,
+                        startColumnIndex: 4,
+                        endColumnIndex: 5
+                    },
+                    cell: {
+                        userEnteredValue: {
+                            formulaValue: "=E2+D3"
+                        }
+                    },
+                    fields: "userEnteredValue"
+                }
+            }]
+        }
+    };
+    setTimeout(async () => {
+        await sheets.spreadsheets.batchUpdate(totalssFillRequest, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('sorted');
+            }
+        });
+    }, 8000)
+
+})()
+
+// console.log(dayOfYear);
+// datum.forEach(d => {
+//     console.log(Math.ceil((Date.parse(d[0]) - Date.parse('2021-01-01'))) / (1000 * 60 * 60 * 24));
+// })
+
+// return sheets.spreadsheets.values.get({
+//         spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+//         range: '2021',
+// })
+//     .then((data) => {
+//             console.log(data.data.values);
+//
+//             // const foretag = Object.entries(fakturor)
+//             //     .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+//             //     .map(([n,f]) => f.Namn);
+//             // const datum = Object.entries(fakturor)
+//             //     .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+//             //     .map(([n,f]) => f.Faktdat);
+//             // const belopp = Object.entries(fakturor)
+//             //     .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+//             //     .map(([n,f]) => f.Total.replace(' ','').replace(',00',''));
+//             //
+//             // console.log(datum);
+//             //
+//             // // Object.entries(fakturor)
+//             // //         .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+//             // //         .forEach(([n,f]) => {
+//             // //             console.log([f.Lopnr, f.Namn, f.Faktdat, f.Total.replace(' ','').replace(',00','')].join(','));
+//             // //         });
+//             // console.log(Object.entries(fakturor).length);
+//
+//     });
 
 // return sheets.spreadsheets.create({
 //     resource: {
 //         properties:{ title: 'apitest' }
 //     }
 // });
+
 
 
