@@ -14,18 +14,22 @@ function getColumn(name) {
 }
 
 function updateColumn(colName, resource) {
-    return sheets.spreadsheets.values.update({
-        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
-        range: `${sheetName}!${colName}2:${colName}`,
-        valueInputOption: 'USER_ENTERED',
-        resource: resource,
-    }, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(result.data.updatedCells, 'cells updated');
-        }
-    });
+    return new Promise((resolve, reject) => {
+        sheets.spreadsheets.values.update({
+            spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+            range: `${sheetName}!${colName}2:${colName}`,
+            valueInputOption: 'USER_ENTERED',
+            resource: resource,
+        }, (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+                console.log(result.data.updatedCells, 'cells updated');
+                resolve(result)
+            }
+        });
+    })
 }
 
 const year = '2021';
@@ -59,8 +63,7 @@ const belopp = getColumn('Total').map(value => [value[0].replace(' ','').replace
 const lopnr = getColumn('Lopnr');
 const dayOfYear = datum.map(d => {
         return [(Math.ceil((Date.parse(d[0]) - Date.parse(`${year}-01-01`))) / (1000 * 60 * 60 * 24)).toString()];
-    })
-;
+    });
 
 // Object.entries(fakturor)
 //         .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
@@ -79,6 +82,9 @@ const dayOfYear = datum.map(d => {
         updateColumn('F', {values: lopnr})
     ])
 
+    // console.log('start pause');
+    // await new Promise(resolve => setTimeout(resolve, 5000));
+    // console.log('end pause');
 
     const sortRequest = {
         spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
@@ -114,7 +120,7 @@ const dayOfYear = datum.map(d => {
                 console.log('sorted');
             }
         });
-    }, 4000);
+    }, 1000);
 
     const firstTotalParams = {
         spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
@@ -127,12 +133,12 @@ const dayOfYear = datum.map(d => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(result.data.updatedCells, 'cells updated');
+                console.log(result.data.updatedCells, 'filled first total');
             }
         });
-    }, 6000);
+    }, 2000);
 
-    const totalssFillRequest = {
+    const totalsFillRequest = {
         spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
         resource: {
             requests: [{
@@ -155,14 +161,14 @@ const dayOfYear = datum.map(d => {
         }
     };
     setTimeout(async () => {
-        await sheets.spreadsheets.batchUpdate(totalssFillRequest, (err, result) => {
+        await sheets.spreadsheets.batchUpdate(totalsFillRequest, (err, result) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log('sorted');
+                console.log('filled total range');
             }
         });
-    }, 8000)
+    }, 3000)
 
 })()
 
