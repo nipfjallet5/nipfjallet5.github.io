@@ -8,7 +8,7 @@ fakturor = require("./fakturor.json");
 function getColumn(name) {
     return Object.entries(fakturor)
         .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
-        .filter((f) => f[1].Faktdat.startsWith(year))
+        // .filter((f) => f[1].Faktdat.startsWith(year))
         .filter((f) => !excluded.includes(f[1].Lopnr))
         .map(([n,f]) => [f[name]]);
 }
@@ -34,7 +34,7 @@ function updateColumn(colName, resource) {
 
 const year = '2021';
 // const sheetName = year;
-const sheetName = 'temp';
+const sheetName = 'samtliga';
 
 let gauth;
 if (key) {
@@ -54,7 +54,9 @@ const excluded = [
     '41',  //återbetalning  av lån i Handlsbanken
     '183', //Fog & Fönster (fönsterrenovering)
     '191', //Fog & Fönster (fönsterrenovering)
-    '192'  //Fog & Fönster (fönsterrenovering)
+    '192', //Fog & Fönster (fönsterrenovering)
+    '203', //Felinmatning Cortea
+    '204', //Felinmatning Cortea
 ];
 
 const foretag = getColumn('Namn');
@@ -66,7 +68,7 @@ const dayOfYear = datum.map(d => {
     });
 
 // Object.entries(fakturor)
-//         .sort((a,b) => a[1].Lopnr - b[1].Lopnr)
+//         .sort((a,b) => a[1].Lopnr - b[1].Lopnrhagalundrosson893607
 //         .forEach(([n,f]) => {
 //             console.log([f.Lopnr, f.Namn, f.Faktdat, f.Total.replace(' ','').replace(',00','')].join(','));
 //         });
@@ -75,100 +77,100 @@ const dayOfYear = datum.map(d => {
 (async () => {
 
     await Promise.all([
-        updateColumn('A', {values: foretag}),
-        updateColumn('B', {values: datum}),
-        updateColumn('C', {values: dayOfYear}),
+        updateColumn('A', {values: lopnr}),
+        updateColumn('B', {values: foretag}),
+        updateColumn('C', {values: datum}),
+        // updateColumn('C', {values: dayOfYear}),
         updateColumn('D', {values: belopp}),
-        updateColumn('F', {values: lopnr})
     ])
 
     // console.log('start pause');
     // await new Promise(resolve => setTimeout(resolve, 5000));
     // console.log('end pause');
 
-    const sortRequest = {
-        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
-        resource: {
-            requests: [{
-                sortRange: {
-                    range: {
-                        "sheetId": 453295472,
-                        "startRowIndex": 1,
-                        // "endRowIndex": 10,
-                        // "startColumnIndex": 0,
-                        "endColumnIndex": 7
-                    },
-                    sortSpecs: [
-                        {
-                            "dimensionIndex": 1,
-                            "sortOrder": "ASCENDING"
-                        },
-                        {
-                            "dimensionIndex": 3,
-                            "sortOrder": "ASCENDING"
-                        }
-                    ]
-                }
-            }]
-        }
-    };
-    setTimeout(async () => {
-        await sheets.spreadsheets.batchUpdate(sortRequest, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('sorted');
-            }
-        });
-    }, 1000);
-
-    const firstTotalParams = {
-        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
-        range: `${sheetName}!E2`,
-        valueInputOption: 'USER_ENTERED',
-        resource: {values: [['=D2']]},
-    };
-    setTimeout(async () => {
-        await sheets.spreadsheets.values.update(firstTotalParams, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(result.data.updatedCells, 'filled first total');
-            }
-        });
-    }, 2000);
-
-    const totalsFillRequest = {
-        spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
-        resource: {
-            requests: [{
-                repeatCell: {
-                    range: {
-                        sheetId: 453295472,
-                        startRowIndex: 2,
-                        endRowIndex: 100,
-                        startColumnIndex: 4,
-                        endColumnIndex: 5
-                    },
-                    cell: {
-                        userEnteredValue: {
-                            formulaValue: "=E2+D3"
-                        }
-                    },
-                    fields: "userEnteredValue"
-                }
-            }]
-        }
-    };
-    setTimeout(async () => {
-        await sheets.spreadsheets.batchUpdate(totalsFillRequest, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('filled total range');
-            }
-        });
-    }, 3000)
+    // const sortRequest = {
+    //     spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+    //     resource: {
+    //         requests: [{
+    //             sortRange: {
+    //                 range: {
+    //                     "sheetId": 453295472,
+    //                     "startRowIndex": 1,
+    //                     // "endRowIndex": 10,
+    //                     // "startColumnIndex": 0,
+    //                     "endColumnIndex": 7
+    //                 },
+    //                 sortSpecs: [
+    //                     {
+    //                         "dimensionIndex": 1,
+    //                         "sortOrder": "ASCENDING"
+    //                     },
+    //                     {
+    //                         "dimensionIndex": 3,
+    //                         "sortOrder": "ASCENDING"
+    //                     }
+    //                 ]
+    //             }
+    //         }]
+    //     }
+    // };
+    // setTimeout(async () => {
+    //     await sheets.spreadsheets.batchUpdate(sortRequest, (err, result) => {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log('sorted');
+    //         }
+    //     });
+    // }, 1000);
+    //
+    // const firstTotalParams = {
+    //     spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+    //     range: `${sheetName}!E2`,
+    //     valueInputOption: 'USER_ENTERED',
+    //     resource: {values: [['=D2']]},
+    // };
+    // setTimeout(async () => {
+    //     await sheets.spreadsheets.values.update(firstTotalParams, (err, result) => {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log(result.data.updatedCells, 'filled first total');
+    //         }
+    //     });
+    // }, 2000);
+    //
+    // const totalsFillRequest = {
+    //     spreadsheetId: '1QK8dYXxO-3MDVE62-sLr-GSvazQKfTO8MXngWXiKNTc',
+    //     resource: {
+    //         requests: [{
+    //             repeatCell: {
+    //                 range: {
+    //                     sheetId: 453295472,
+    //                     startRowIndex: 2,
+    //                     endRowIndex: 100,
+    //                     startColumnIndex: 4,
+    //                     endColumnIndex: 5
+    //                 },
+    //                 cell: {
+    //                     userEnteredValue: {
+    //                         formulaValue: "=E2+D3"
+    //                     }
+    //                 },
+    //                 fields: "userEnteredValue"
+    //             }
+    //         }]
+    //     }
+    // };
+    // setTimeout(async () => {
+    //     await sheets.spreadsheets.batchUpdate(totalsFillRequest, (err, result) => {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log('filled total range');
+    //         }
+    //     });
+    // }, 3000)
 
 })()
 

@@ -6,3 +6,5 @@ Gemfile.lock
 *.iml
 /node/gcred.json
 /node/fakturakoll.cmd
+/tvatt/node_modules/
+/.jekyll-cache/Jekyll/Cache/
