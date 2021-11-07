@@ -57,6 +57,10 @@ const excluded = [
     '192', //Fog & Fönster (fönsterrenovering)
     '203', //Felinmatning Cortea
     '204', //Felinmatning Cortea
+    '215', //Fog & Fönster (fönsterrenovering)
+    '217', //Målerikonsulterna (fönsterrenovering)
+    '219', //Fog & Fönster (fönsterrenovering)
+    '220', //Fog & Fönster (fönsterrenovering)
 ];
 
 const foretag = getColumn('Namn');
