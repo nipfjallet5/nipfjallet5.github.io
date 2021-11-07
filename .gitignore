@@ -8,3 +8,5 @@ Gemfile.lock
 /node/fakturakoll.cmd
 /tvatt/node_modules/
 /.jekyll-cache/Jekyll/Cache/
+node/fakturor.log
+node/gauth.json
