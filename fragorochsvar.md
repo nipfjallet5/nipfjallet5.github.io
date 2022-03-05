@@ -106,10 +106,10 @@ Endast kolfilterfläkt godkänns.
 Det går bra att mejla.
 
 **Har ni någon ekonomisk förvaltare?**\\
-Ja. Cortea Bygg & Förvaltning AB. Vår kontaktperson heter Marie Ivarsson (marie.ivarsson@cortea.se) .
+Ja. Cortea Bygg & Förvaltning AB. Vår kontaktperson heter Marie Ivarsson (marie.ivarsson@cortea.se).
 
 **Var vänder vi oss för att få ut mäklarbild?**\\
-Till vår ekonomiska förvaltere
+Till vår ekonomiska förvaltare.
 
 **Äger föreningen marken eller är den upplåten med tomträtt?**\\
 Det är tomträtt. 
