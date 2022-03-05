@@ -32,7 +32,7 @@ function updateColumn(colName, resource) {
     })
 }
 
-const year = '2021';
+const year = '2022';
 // const sheetName = year;
 const sheetName = 'samtliga';
 
@@ -51,7 +51,7 @@ oauth2Client.setCredentials({refresh_token: gauth.sheets.refresh_token});
 const sheets = google.sheets({ version: 'v4', auth: oauth2Client });
 
 const excluded = [
-    '41',  //återbetalning  av lån i Handlsbanken
+    '41',  //återbetalning av lån i Handlsbanken
     '183', //Fog & Fönster (fönsterrenovering)
     '191', //Fog & Fönster (fönsterrenovering)
     '192', //Fog & Fönster (fönsterrenovering)
@@ -85,7 +85,7 @@ const dayOfYear = datum.map(d => {
         updateColumn('B', {values: foretag}),
         updateColumn('C', {values: datum}),
         // updateColumn('C', {values: dayOfYear}),
-        updateColumn('D', {values: belopp}),
+        updateColumn('F', {values: belopp}),
     ])
 
     // console.log('start pause');
