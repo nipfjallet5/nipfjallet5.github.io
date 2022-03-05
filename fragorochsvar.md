@@ -37,7 +37,8 @@ De flesta lägenheter har både ett källarförråd på ca 3kvm och ett vidsför
 2009 Renovering av tvättstuga\\
 2009 Fönster renoverades\\
 2017 Renovering av stentrappa\\
-2017 Renovering av fasadsockel
+2017 Renovering av fasadsockel\\
+2021 Renovering av fönster
 
 **Finns 3-fas el indraget i lägenheterna?**\\
 Ja
@@ -81,7 +82,7 @@ Föreningen har 4 st parkeringsplatser som kan hyras för 500 kr/mån, alla plat
 Ja. Tvättstuga och Cykel/Barnvagnsförråd
 
 **Ska fastigheten genomgå några omfattande renoveringar, och i så fall när?**\\
-Fönsterrenovering planeras under 2020. 
+Nej
 
 **Trappstädning?**\\
 Sköts av städfirma.
@@ -93,7 +94,7 @@ Sköts av städfirma.
 Fjärrvärme
 
 **Typ av fönster?**\\
-2-glas
+Renoverade 2-glas originalfönster med energiglas på insidan. 
 
 **Typ av Ventilation?**\\
 Självdrag
@@ -101,3 +102,14 @@ Självdrag
 **Typ av Fläkt?**\\
 Endast kolfilterfläkt godkänns.
 
+**Kan man mejla medlemskapsansökan eller måste den gå via post?**\\
+Det går bra att mejla.
+
+**Har ni någon ekonomisk förvaltare?**
+Ja. Cortea Bygg & Förvaltning AB. Vår kontaktperson heter Marie Ivarsson (marie.ivarsson@cortea.se) .
+
+**Var vänder vi oss för att få ut mäklarbild?**
+Till vår ekonomiska förvaltere
+
+**Äger föreningen marken eller är den upplåten med tomträtt?**
+Det är tomträtt. 
