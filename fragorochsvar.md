@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Frågor & Svar (uppdaterat 2019-09-01)
+title: Frågor & Svar (uppdaterat 2022-03-05)
 permalink: /fragorochsvar/
 ---
 
@@ -20,7 +20,7 @@ Ja
 boyta 3500 kvm, lokalyta 60 kvm
 
 **Tillhör det något förråd till lägenheten? Vindsförråd/källarförråd? Ungefärlig storlek?**\\
-De flesta lägenheter har både ett källarförråd på ca 3kvm och ett vidsförråd på mellan 6-8kvm. Ett par lägenheter har enbart ett vindsförråd.
+De flesta lägenheter har både ett källarförråd på ca 3kvm och ett vidsförråd på mellan 6-8kvm. Några lägenheter har enbart ett vindsförråd.
 
 **Har fastigheten genomgått några omfattande renoveringar, och i så fall när?**\\
 1994 Renovering tak\\
@@ -105,11 +105,11 @@ Endast kolfilterfläkt godkänns.
 **Kan man mejla medlemskapsansökan eller måste den gå via post?**\\
 Det går bra att mejla.
 
-**Har ni någon ekonomisk förvaltare?**
+**Har ni någon ekonomisk förvaltare?**\\
 Ja. Cortea Bygg & Förvaltning AB. Vår kontaktperson heter Marie Ivarsson (marie.ivarsson@cortea.se) .
 
-**Var vänder vi oss för att få ut mäklarbild?**
+**Var vänder vi oss för att få ut mäklarbild?**\\
 Till vår ekonomiska förvaltere
 
-**Äger föreningen marken eller är den upplåten med tomträtt?**
+**Äger föreningen marken eller är den upplåten med tomträtt?**\\
 Det är tomträtt. 
