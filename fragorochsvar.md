@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Frågor & Svar (uppdaterat 2022-03-05)
+title: Frågor & Svar (uppdaterat 2022-07-09)
 permalink: /fragorochsvar/
 ---
 
@@ -82,7 +82,7 @@ Föreningen har 4 st parkeringsplatser som kan hyras för 500 kr/mån, alla plat
 Ja. Tvättstuga och Cykel/Barnvagnsförråd
 
 **Ska fastigheten genomgå några omfattande renoveringar, och i så fall när?**\\
-Nej
+Inget planlagt
 
 **Trappstädning?**\\
 Sköts av städfirma.
