@@ -10,6 +10,9 @@ permalink: /fragorochsvar/
 **När bildades föreningen?**\\
 1991
 
+**Vilka adresser finns i föreningen?**\\
+Kebnekaisevägen 18,20 & 22
+
 **Är föreningen skatteklassad som sk "äkta" bostadsrättsförening i dagsläget?**\\
 Ja
 
@@ -103,7 +106,7 @@ Självdrag
 Endast kolfilterfläkt godkänns.
 
 **Kan man mejla medlemskapsansökan eller måste den gå via post?**\\
-Det går bra att mejla.
+Helst PDF-fil via mejl. Annars till: BRF Nipfjället 5, Kebnkaisevägen 22, 16736 Bromma.
 
 **Har ni någon ekonomisk förvaltare?**\\
 Ja. Cortea Bygg & Förvaltning AB. Vår kontaktperson heter Marie Ivarsson (marie.ivarsson@cortea.se).
