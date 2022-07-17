@@ -132,6 +132,7 @@ fs.readdir(directory, (err, files) => {
     console.log(persons);
     console.log(Object.keys(persons));
     console.log(Object.keys(persons).length);
+    Object.keys(persons).forEach(p => {console.log(p);})
 
     Object.entries(persons).forEach(([name, amounts]) => {
         if (amounts.length < 20 ) console.log(amounts.length, name);
