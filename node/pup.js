@@ -102,7 +102,7 @@ let gauthKey = process.argv[3];
             await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140&pagesize0=20');
             //await page.goto('https://cortea.realportal.nu/common/portal.php?menuid=103&pageid=140');
             await page.waitFor(2000);
-      	    await page.screenshot({path: 'screenshot.png'});
+      	    // await page.screenshot({path: 'screenshot.png'});
 
             const fakturor = await page.evaluate(() => {
                 const fields = ['Lopnr','Namn','OCRFaktnr','Faktdat','Forfaller','Total','Saldo','Faktbild','Attestera'];

@@ -38,7 +38,7 @@ const sheetName = 'samtliga';
 
 let gauth;
 if (key) {
-        gauth = JSON.parse(CryptoJS.AES.decrypt(fs.readFileSync('../assets/enc/gauth.json.enc').toString(), CryptoJS.SHA256(key).toString()).toString(CryptoJS.enc.Utf8));
+        gauth = JSON.parse(CryptoJS.AES.decrypt(fs.readFileSync('assets/enc/gauth.json.enc').toString(), CryptoJS.SHA256(key).toString()).toString(CryptoJS.enc.Utf8));
 }
 else {
         throw(new Error('missing key'));
