@@ -1,12 +1,4 @@
-node/node_modules
-.idea
-_site
-.sass-cache
-Gemfile.lock
-*.iml
-/node/gcred.json
-/node/fakturakoll.cmd
-/tvatt/node_modules/
-/.jekyll-cache/Jekyll/Cache/
-node/fakturor.log
-node/gauth.json
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
