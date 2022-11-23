@@ -1,5 +1,5 @@
 ---
-layout: tvatt
-title: tvatt
-permalink: /tvatt
+layout: tvattstuga
+title: tvattstuga
+permalink: /tvattstuga
 ---
