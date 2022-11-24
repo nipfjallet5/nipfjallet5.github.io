@@ -51,9 +51,9 @@ De flesta lägenheter har både ett källarförråd på ca 3kvm och ett vindsfö
 **Finns 3-fas el indraget i lägenheterna?**\\
 Ja
 
-**Tar föreningen/förvaltaren ut överlåtelseavgift/fantsättningsavgift?**\\
-Överlåtelseavgift: 2.5 % av gällande basbelopp debiteras säljaren\\
-Pantsättningsavgift: 1 % av gällande basbelopp debiteras pantsättaren
+**Tar föreningen/förvaltaren ut överlåtelseavgift/pantsättningsavgift?**\\
+överlåtelseavgift: 2.5 % av gällande basbelopp debiteras säljaren\\
+pantsättningsavgift: 1 % av gällande basbelopp debiteras pantsättaren
 
 **Tar föreningen/förvaltaren ut några andra avgifter/debiteringar vid ett ägarbyte?**\\
 Nej
@@ -93,7 +93,7 @@ Ja. Tvättstuga och cykel/barnvagnsförråd.
 Inget är planlagt.
 
 **Trappstädning?**\\
-Det sköts av städfirma.
+Den sköts av en städfirma.
 
 **Städdagar?**\\
 2 ggr om året. En på våren och en på hösten.
@@ -111,7 +111,7 @@ Självdrag
 Endast kolfilterfläkt godkänns.
 
 **Kan man mejla medlemskapsansökan eller måste den gå via post?**\\
-Helst PDF-fil via mejl. Annars till: BRF Nipfjället 5, Kebnkaisevägen 22, 16736 Bromma.
+Helst PDF-fil via mejl. Annars till: BRF Nipfjället 5, Kebnekaisevägen 22, 16736 Bromma.
 
 **Har ni någon ekonomisk förvaltare?**\\
 K&B Förvaltning AB
