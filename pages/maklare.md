@@ -5,7 +5,7 @@ permalink: /maklare
 ---
 
 #### **Vanliga frågor och svar**
-uppdaterad 2022-11-20
+uppdaterad 2023-12-20
 \\
 \\
 **Vilket är Föreningens organisationsnummer?**\\
@@ -47,6 +47,9 @@ De flesta lägenheter har både ett källarförråd på ca 3kvm och ett vindsfö
 2017 Renovering av fasadsockel\\
 2021 Renovering av fönster\\
 2022 Putslagning och tvätt
+
+**Är det några omfattande renoveringar planerade för 2024?**\\
+Nej
 
 **Finns 3-fas el indraget i lägenheterna?**\\
 Ja
