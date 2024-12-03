@@ -117,10 +117,10 @@ Endast kolfilterfläkt godkänns.
 Helst PDF-fil via mejl. Annars till: BRF Nipfjället 5, Kebnekaisevägen 22, 16736 Bromma.
 
 **Har ni någon ekonomisk förvaltare?**\\
-K&B Förvaltning AB
+<a href="https://ecaredovisning.se">ECA Redovisning och förvaltning AB</a>
 
 **Var vänder vi oss för att få ut mäklarbild?**\\
-Till vår ekonomiska förvaltare (service@kbforvaltning.se)
+Till vår ekonomiska förvaltare (info@ecaredovisning.se)
 
 **Äger föreningen marken eller är den upplåten med tomträtt?**\\
 Det är tomträtt.
