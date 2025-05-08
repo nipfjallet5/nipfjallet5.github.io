@@ -14,5 +14,5 @@ permalink: /boende
     <!-- <br><a href="assets/pdf/stadgar.pdf">Stadgar</a> -->
     <!-- <br><a href="#">Ekonomi</a> -->
     <!-- <br><a href="assets/pdf/årsredovisning2021.pdf">Senaste Årsredovisningen (2021)</a> -->
-    <br><a href="arsredovisning">Senaste Årsredovisningen (2023, digitalt signerad)</a>
+    <br><a href="arsredovisning">Senaste Årsredovisningen (2024, digitalt signerad)</a>
 </div>
