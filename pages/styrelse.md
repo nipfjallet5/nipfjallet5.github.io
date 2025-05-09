@@ -4,15 +4,16 @@ title: styrelse
 permalink: /styrelse
 ---
 
-Styrelsen består fr.o.m 2023-06-28 av: 
+Styrelsen består fr.o.m 2024-11-10 av: 
 
 **Ledamöter**:\\
 Johan Lundqvist\\
 Matilda Widing\\
 Niklas Jansson
+Kahsa Hultén
 
 **Suppleant**:\\
-Christian Johansson
+Ella Svensson
 
 Kontaktuppgifter finns i trapphusen.
 
