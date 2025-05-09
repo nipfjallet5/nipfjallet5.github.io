@@ -9,7 +9,7 @@ Styrelsen består fr.o.m 2024-11-10 av:
 **Ledamöter**:\\
 Johan Lundqvist\\
 Matilda Widing\\
-Niklas Jansson
+Niklas Jansson\\
 Kahsa Hultén
 
 **Suppleant**:\\
