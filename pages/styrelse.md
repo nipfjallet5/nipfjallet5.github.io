@@ -10,7 +10,7 @@ Styrelsen består fr.o.m 2026-05-24 av:
 Ella Svensson\\
 Rickard Bellman\\
 Kajsa Hultén\\
-Hampus Malm\\
+Hampus Malm
 
 **Suppleant**:\\
 Johan Lundqvist
