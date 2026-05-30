@@ -4,16 +4,16 @@ title: styrelse
 permalink: /styrelse
 ---
 
-Styrelsen består fr.o.m 2024-11-10 av: 
+Styrelsen består fr.o.m 2026-05-24 av:
 
 **Ledamöter**:\\
-Johan Lundqvist\\
-Matilda Widing\\
-Niklas Jansson\\
-Kahsa Hultén
+Ella Svensson\\
+Rickard Bellman\\
+Kajsa Hultén\\
+Hampus Malm\\
 
 **Suppleant**:\\
-Ella Svensson
+Johan Lundqvist
 
 Kontaktuppgifter finns i trapphusen.
 
